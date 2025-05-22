@@ -54,3 +54,21 @@ export const OnlyIcon = () =>
   new IconButton({
     iconView: new Box({ as: "span", children: "🔔" }),
   }).render();
+
+// 외부 이벤트 바인딩
+export const WithClick = () => {
+  const button = new SimpleButton({
+    label: "Click me!",
+  });
+
+  // DOM Redraw 없음
+  button.addEventListener("click", () => {
+    if (button.element().style.backgroundColor === "lightblue") {
+      button.element().style.backgroundColor = "";
+    } else {
+      button.element().style.backgroundColor = "lightblue";
+    }
+  });
+
+  return button.render();
+};

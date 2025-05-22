@@ -1,4 +1,4 @@
-import { Button, RuneElement } from "@rune-ui/archtype";
+import { Box, Button, ButtonRoot } from "@rune-ui/archtype";
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 

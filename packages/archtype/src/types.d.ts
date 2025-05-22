@@ -8,8 +8,8 @@ export type As =
   | keyof HTMLElementTagNameMap
   | (abstract new (...args: any[]) => View<any>);
 
-export type PropsOf<T extends As> = T extends keyof HTMLElementTagNameMap
-  ? Omit<Partial<HTMLElementTagNameMap[T]>, "children" | "style"> & {
+export type PropsOf<T extends As> = T extends keyof JSX.IntrinsicElements
+  ? Omit<JSX.IntrinsicElements[T], "children" | "style"> & {
       style?: string;
     }
   : T extends abstract new (...args: any[]) => View<infer P>
