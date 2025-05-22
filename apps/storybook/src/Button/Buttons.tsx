@@ -1,5 +1,5 @@
-import { Box, Button, ButtonRoot } from "@rune-ui/archtype";
-import { View } from "rune-ts";
+import { Button } from "@rune-ui/archtype";
+import { html, View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 
 // Prop 제한
@@ -125,5 +125,30 @@ export class IconButton extends View<IconButtonProps> {
         </Button.Inner>
       </Button.Root>
     );
+  }
+}
+
+export class NoJSXButton extends View<SimpleButtonProps> {
+  override template() {
+    return html`
+      <div>
+        ${new Button.Root({
+          disabled: false,
+          style: "background-color: #3b82f6; color: #fff; padding: 10px;",
+          children: [
+            new Button.Inner({
+              style: "display: flex; align-items: center; gap: 10px;",
+              children: html`
+                Hi!!!!
+                ${new Button.Label({
+                  children: "Button",
+                  style: "font-size: 1rem; font-weight: 700; color: #fff;",
+                })}
+              `,
+            }),
+          ],
+        })}
+      </div>
+    `;
   }
 }

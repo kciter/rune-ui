@@ -1,6 +1,6 @@
 import type { Meta } from "@storybook/html";
-import { IconButton, SimpleButton, StyledButton } from "./Buttons";
 import { Box } from "@rune-ui/archtype";
+import { IconButton, SimpleButton, StyledButton, NoJSXButton } from "./Buttons";
 
 const meta = {
   title: "Component/Button",
@@ -72,3 +72,16 @@ export const WithClick = () => {
 
   return button.render();
 };
+
+export const NoJSX = () =>
+  new NoJSXButton({
+    label: "No JSX Button",
+    leftIconView: new Box({
+      as: "span",
+      children: "👈",
+    }),
+    rightIconView: new Box({
+      as: "span",
+      children: "👉",
+    }),
+  }).render();

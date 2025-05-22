@@ -1,6 +1,6 @@
 import { RuneChildren, RuneElement, RuneView } from "@/types";
 import { createHtml } from "@rune-ui/jsx";
-import { View } from "rune-ts";
+import { html, View } from "rune-ts";
 import { buttonParts } from "./button.anatomy";
 
 export interface RuneUIButtonRootProps extends RuneElement<"button"> {
@@ -25,6 +25,7 @@ export interface RuneUIButtonInnerProps extends RuneElement<"span"> {
 export class ButtonInner extends View<RuneUIButtonInnerProps> {
   override template() {
     const { children, ...rest } = this.data;
+
     return (
       <span {...rest} {...buttonParts.inner.attrs}>
         {children}
@@ -85,26 +86,3 @@ export const Button = {
   Label: ButtonLabel,
   RightIcon: ButtonRightIcon,
 };
-
-interface SimpleButtonProps {
-  label: string;
-  leftIconView?: View;
-  rightIconView?: View;
-  disabled?: boolean;
-}
-
-export class SimpleButton extends View<SimpleButtonProps> {
-  override template() {
-    const { label, leftIconView, rightIconView, disabled } = this.data;
-
-    return (
-      <Button.Root disabled={disabled}>
-        <Button.Inner>
-          {leftIconView && <Button.LeftIcon icon={leftIconView} />}
-          <Button.Label>{label}</Button.Label>
-          {rightIconView && <Button.RightIcon icon={rightIconView} />}
-        </Button.Inner>
-      </Button.Root>
-    );
-  }
-}
