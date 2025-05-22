@@ -13,6 +13,10 @@ importers:
         version: 5.8.3
 
   apps/storybook:
+    dependencies:
+      rune-ts:
+        specifier: ^0.9.3
+        version: 0.9.3
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^3.2.6
@@ -121,6 +125,9 @@ importers:
         specifier: ^0.9.3
         version: 0.9.3
     devDependencies:
+      '@rune-ui/anatomy':
+        specifier: workspace:*
+        version: link:../anatomy
       '@rune-ui/builder':
         specifier: workspace:*
         version: link:../../internals/builder

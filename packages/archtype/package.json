@@ -29,6 +29,7 @@
     "build": "rune-build"
   },
   "devDependencies": {
+    "@rune-ui/anatomy": "workspace:*",
     "@rune-ui/builder": "workspace:*",
     "@rune-ui/eslint-config": "workspace:*",
     "@rune-ui/typescript-config": "workspace:*",

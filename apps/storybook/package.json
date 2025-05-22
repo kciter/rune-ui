@@ -8,6 +8,9 @@
     "build": "storybook build",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "rune-ts": "^0.9.3"
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
     "@rune-ui/eslint-config": "workspace:*",
