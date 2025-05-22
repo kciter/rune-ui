@@ -1,1 +1,1 @@
-export * from "./ButtonView";
+export * from "./button.view";

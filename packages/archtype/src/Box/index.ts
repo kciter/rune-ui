@@ -1,1 +1,1 @@
-export * from "./BoxView";
+export * from "./box.view";
