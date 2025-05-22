@@ -4,6 +4,9 @@ import { IconButton, SimpleButton, StyledButton, NoJSXButton } from "./Buttons";
 
 const meta = {
   title: "Component/Button",
+  parameters: {
+    layout: "centered",
+  },
 } satisfies Meta;
 
 export default meta;

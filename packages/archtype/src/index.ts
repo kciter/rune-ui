@@ -7,4 +7,7 @@ export type * from "./box";
 export * from "./button";
 export type * from "./button";
 
+export * from "./toggle";
+export type * from "./toggle";
+
 export type * from "./types";

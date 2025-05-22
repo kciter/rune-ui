@@ -1,0 +1,149 @@
+/* toggle.module.css */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 기본 스타일 */
+.track {
+  width: 44px;
+  height: 24px;
+  background-color: #e2e8f0;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+
+[data-state="checked"] .track {
+  background-color: #0072de;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-state="checked"] .thumb {
+  transform: translateX(20px);
+}
+
+/* 크기 변형 */
+.track-sm {
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+}
+
+.thumb-sm {
+  width: 14px;
+  height: 14px;
+}
+
+[data-state="checked"] .thumb-sm {
+  transform: translateX(14px);
+}
+
+.track-lg {
+  width: 56px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+.thumb-lg {
+  width: 24px;
+  height: 24px;
+  top: 3px;
+  left: 3px;
+}
+
+[data-state="checked"] .thumb-lg {
+  transform: translateX(26px);
+}
+
+/* 색상 변형 */
+[data-state="checked"] .track-green {
+  background-color: #10b981;
+}
+
+[data-state="checked"] .track-purple {
+  background-color: #8b5cf6;
+}
+
+[data-state="checked"] .track-orange {
+  background-color: #f97316;
+}
+
+/* 형태 변형 */
+.track-square {
+  border-radius: 4px;
+}
+
+.thumb-square {
+  border-radius: 2px;
+}
+
+/* 비활성화 스타일 */
+[data-disabled="true"] .track-disabled,
+.track-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 아이콘이 있는 토글 */
+.thumb-with-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-checked,
+.icon-unchecked {
+  position: absolute;
+  font-size: 12px;
+  font-weight: bold;
+  display: none;
+}
+
+[data-state="checked"] .thumb-with-icon .icon-checked {
+  display: block;
+  color: #0072de;
+}
+
+[data-state="unchecked"] .thumb-with-icon .icon-unchecked {
+  display: block;
+  color: #64748b;
+}
+
+/* 라벨 스타일 */
+.label {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.label-disabled {
+  opacity: 0.6;
+}
+
+/* 라벨 스타일 */
+.label {
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.label-disabled {
+  color: #94a3b8;
+}

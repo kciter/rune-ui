@@ -6,16 +6,20 @@ import { createHtml } from "@rune-ui/jsx";
 
 const meta = {
   title: "Component/AspectRatio",
+  parameters: {
+    layout: "centered",
+  },
 } satisfies Meta;
 
 export default meta;
 
 class AspectRatioExample extends View<{
   ratio: number;
+  label: string;
   backgroundColor?: string;
 }> {
   override template() {
-    const { ratio, backgroundColor = "#0072de" } = this.data;
+    const { ratio, label, backgroundColor = "#0072de" } = this.data;
 
     return (
       <AspectRatio ratio={ratio} style="max-width: 300px; margin-bottom: 20px;">
@@ -32,7 +36,7 @@ class AspectRatioExample extends View<{
             border-radius: 8px;
           `}
         >
-          {ratio}:1
+          {label}
         </Box>
       </AspectRatio>
     );
@@ -43,12 +47,14 @@ class AspectRatioExample extends View<{
 export const Square = () =>
   new AspectRatioExample({
     ratio: 1,
+    label: "1:1",
   }).render();
 
 // 와이드스크린 (16:9)
 export const Widescreen = () =>
   new AspectRatioExample({
     ratio: 16 / 9,
+    label: "16:9",
     backgroundColor: "#8952e0",
   }).render();
 
@@ -56,6 +62,7 @@ export const Widescreen = () =>
 export const Standard = () =>
   new AspectRatioExample({
     ratio: 4 / 3,
+    label: "4:3",
     backgroundColor: "#e06c52",
   }).render();
 

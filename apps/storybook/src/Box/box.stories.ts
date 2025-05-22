@@ -3,6 +3,9 @@ import { Box } from "@rune-ui/archtype";
 
 const meta = {
   title: "Component/Box",
+  parameters: {
+    layout: "centered",
+  },
 } satisfies Meta;
 
 export default meta;
