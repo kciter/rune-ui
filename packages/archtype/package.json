@@ -1,0 +1,42 @@
+{
+  "name": "@rune-ui/archtype",
+  "version": "0.0.1",
+  "license": "MIT",
+  "source": "./src/index.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint --max-warnings 0 src",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "build": "rune-build"
+  },
+  "devDependencies": {
+    "@rune-ui/builder": "workspace:*",
+    "@rune-ui/eslint-config": "workspace:*",
+    "@rune-ui/typescript-config": "workspace:*",
+    "@rune-ui/jsx": "workspace:*",
+    "eslint": "^9.18.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "rune-ts": "^0.9.3"
+  }
+}

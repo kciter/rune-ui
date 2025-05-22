@@ -1,0 +1,18 @@
+{
+  "extends": "@rune-ui/typescript-config/base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "noEmit": true,
+    "jsx": "react",
+    "jsxFactory": "createHtml",
+    "jsxFragmentFactory": "Fragment",
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+    "types": [
+      "@rune-ui/jsx/src/jsx-runtime"
+    ]
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -12,6 +12,7 @@
     "@chromatic-com/storybook": "^3.2.6",
     "@rune-ui/eslint-config": "workspace:*",
     "@rune-ui/typescript-config": "workspace:*",
+    "@rune-ui/archtype": "workspace:*",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-interactions": "^8.6.14",
     "@storybook/blocks": "^8.6.14",
