@@ -1,0 +1,23 @@
+{
+  "name": "@rune-ui/builder",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./builder.js",
+  "exports": {
+    ".": "./builder.js"
+  },
+  "bin": {
+    "rune-build": "./rune-build.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.4",
+    "tsup": "^8.5.0"
+  },
+  "devDependencies": {
+    "@rune-ui/eslint-config": "workspace:*",
+    "@rune-ui/typescript-config": "workspace:*",
+    "@rune-ui/jsx": "workspace:*",
+    "eslint": "^9.18.0"
+  }
+}
