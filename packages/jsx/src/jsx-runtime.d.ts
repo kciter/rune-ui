@@ -1,0 +1,51 @@
+import type { Html } from "rune-ts";
+
+declare global {
+  export namespace JSX {
+    type Element = Html;
+
+    type JSXChildren =
+      | string
+      | number
+      | boolean
+      | null
+      | undefined
+      | View
+      | Html
+      | (string | number | boolean | null | undefined | View | Html)[];
+
+    type ElementProps<T extends keyof HTMLElementTagNameMap> = Omit<
+      Partial<HTMLElementTagNameMap[T]>,
+      "style" | "children"
+    > & {
+      children?: JSXChildren;
+      style?: string;
+    };
+
+    export type RuneChildren = JSXChildren;
+
+    type ElementProps<T extends keyof HTMLElementTagNameMap> = Omit<
+      Partial<HTMLElementTagNameMap[T]>,
+      "style" | "children"
+    > & {
+      children?: RuneChildren;
+      style?: string;
+    };
+
+    type IntrinsicElements = {
+      [K in keyof HTMLElementTagNameMap]: ElementProps<K>;
+    };
+
+    interface ElementClass {
+      prototype: View<any>;
+    }
+
+    interface ElementAttributesProperty {
+      props: {};
+    }
+
+    interface ElementChildrenAttribute {
+      children: {};
+    }
+  }
+}
