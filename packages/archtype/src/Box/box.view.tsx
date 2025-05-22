@@ -7,7 +7,7 @@ export type RuneUIBoxProps<T extends As> = RuneElement<T> & {
   children?: View[] | string;
 };
 
-export class BoxView<T extends As> extends View<RuneUIBoxProps<T>> {
+export class Box<T extends As> extends View<RuneUIBoxProps<T>> {
   override template() {
     const {
       as: Tag = "div",

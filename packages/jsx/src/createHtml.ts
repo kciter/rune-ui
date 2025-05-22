@@ -49,7 +49,14 @@ export function createHtml(
   ...children: Child[]
 ): Html {
   if (typeof tag !== "string") {
-    return new tag({ ...props }) as unknown as Html;
+    // children이 있으면 props에 children을 추가
+    const mergedProps = {
+      ...props,
+      ...(children.length > 0
+        ? { children: children.length === 1 ? children[0] : children }
+        : {}),
+    };
+    return new tag(mergedProps) as unknown as Html;
   }
 
   const normalizedProps = { ...props };

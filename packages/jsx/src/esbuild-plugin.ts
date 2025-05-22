@@ -9,7 +9,7 @@ export function runeJsxEsbuildPlugin(
 ): Plugin {
   const factory = options.jsxFactory ?? "createHtml";
   const fragment = options.jsxFragmentFactory ?? "Fragment";
-  const importPath = options.importPath ?? "@rune-ui/jsx/createHtml";
+  const importPath = options.importPath ?? "@rune-ui/jsx";
 
   return {
     name: "rune-jsx-esbuild-plugin",

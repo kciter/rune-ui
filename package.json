@@ -5,6 +5,7 @@
   "keywords": ["rune-ui", "rune", "headless-component"],
   "license": "MIT",
   "scripts": {
+    "build": "pnpm -r build",
     "storybook": "pnpm -F storybook dev",
     "build-storybook": "pnpm -F storybook build"
   },

@@ -1,7 +1,6 @@
 {
   "name": "@rune-ui/storybook",
   "private": true,
-  "type": "module",
   "scripts": {
     "lint": "eslint --max-warnings 0 .",
     "dev": "storybook dev -p 6006",
@@ -16,6 +15,7 @@
     "@rune-ui/eslint-config": "workspace:*",
     "@rune-ui/typescript-config": "workspace:*",
     "@rune-ui/archtype": "workspace:*",
+    "@rune-ui/jsx": "workspace:*",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-interactions": "^8.6.14",
     "@storybook/blocks": "^8.6.14",
@@ -24,7 +24,8 @@
     "@storybook/test": "^8.6.14",
     "eslint": "^9.18.0",
     "storybook": "^8.6.14",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vite": "^6.3.5"
   },
   "eslintConfig": {
     "extends": [

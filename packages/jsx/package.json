@@ -35,7 +35,8 @@
     "@types/node": "^22.15.21",
     "esbuild": "^0.25.4",
     "eslint": "^9.18.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "rune-ts": "^0.9.3"

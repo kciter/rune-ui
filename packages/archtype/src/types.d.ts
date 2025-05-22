@@ -2,6 +2,8 @@ import type { View } from "rune-ts";
 
 export type RuneChildren = JSXChildren;
 
+export type RuneView = View<any> | string | number | boolean | null | undefined;
+
 export type As =
   | keyof HTMLElementTagNameMap
   | (abstract new (...args: any[]) => View<any>);

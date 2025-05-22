@@ -37,11 +37,11 @@ declare global {
     };
 
     interface ElementClass {
-      prototype: View<any>;
+      data: any;
     }
 
     interface ElementAttributesProperty {
-      props: {};
+      data: {};
     }
 
     interface ElementChildrenAttribute {

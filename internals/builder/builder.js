@@ -3,7 +3,7 @@ import path from "node:path";
 import fs from "node:fs";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
-import { runeJsxEsbuildPlugin } from "@rune-ui/jsx/esbuild-plugin";
+import { runeJsxEsbuildPlugin } from "@rune-ui/jsx";
 
 /**
  * @param {string} relativePath
