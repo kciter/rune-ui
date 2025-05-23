@@ -1,42 +1,42 @@
-# name: 'Chromatic'
+name: 'Chromatic'
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
-# jobs:
-#   chromatic-deployment:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
+jobs:
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-#       - name: Setup pnpm
-#         uses: pnpm/action-setup@v4
-#         with:
-#           run_install: false
+      # - name: Setup pnpm
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     run_install: false
 
-#       - name: Setup Node
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version-file: '.nvmrc'
-#           cache: 'pnpm'
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: '.nvmrc'
+      #     cache: 'pnpm'
 
-#       - name: Install dependencies
-#         run: pnpm install --frozen-lockfile
+      # - name: Install dependencies
+      #   run: pnpm install --frozen-lockfile
 
-#       - name: Publish to Chromatic
-#         uses: chromaui/action@v1
-#         with:
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           projectToken: TODO
-#           exitOnceUploaded: true
-#           exitZeroOnChanges: true
+      # - name: Publish to Chromatic
+      #   uses: chromaui/action@v1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     projectToken: TODO
+      #     exitOnceUploaded: true
+      #     exitZeroOnChanges: true
