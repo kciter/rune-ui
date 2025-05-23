@@ -1,6 +1,6 @@
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
-import type { RuneChildren, RuneElement } from "@/types";
+import type { RuneChildren, RuneElement } from "@rune-ui/types";
 import { aspectRatioParts } from "./aspect-ratio.anatomy";
 
 export interface RuneUIAspectRatioProps extends RuneElement<"div"> {

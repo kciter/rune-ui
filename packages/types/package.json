@@ -1,5 +1,5 @@
 {
-  "name": "@rune-ui/archtype",
+  "name": "@rune-ui/types",
   "version": "0.0.1",
   "license": "MIT",
   "source": "./src/index.ts",
@@ -29,13 +29,9 @@
     "build": "rune-build"
   },
   "devDependencies": {
-    "@rune-ui/anatomy": "workspace:*",
     "@rune-ui/builder": "workspace:*",
     "@rune-ui/eslint-config": "workspace:*",
     "@rune-ui/typescript-config": "workspace:*",
-    "@rune-ui/jsx": "workspace:*",
-    "@rune-ui/machine": "workspace:*",
-    "@rune-ui/types": "workspace:*",
     "eslint": "^9.18.0",
     "typescript": "^5.8.3"
   },

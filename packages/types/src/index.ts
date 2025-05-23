@@ -1,8 +1,8 @@
-import type { View } from "rune-ts";
+import type { Html, View } from "rune-ts";
 
 export type RuneView =
   | View<any>
-  | JSX.Element
+  | Html
   | string
   | number
   | boolean

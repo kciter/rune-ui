@@ -1,4 +1,4 @@
-import { RuneChildren, RuneElement, RuneView } from "@/types";
+import { RuneChildren, RuneElement, RuneView } from "@rune-ui/types";
 import { createHtml } from "@rune-ui/jsx";
 import { View } from "rune-ts";
 import { buttonParts } from "./button.anatomy";

@@ -1,18 +1,11 @@
 import type { Html } from "rune-ts";
+import { RuneChildren } from "@rune-ui/types";
 
 declare global {
   export namespace JSX {
     type Element = Html;
 
-    type JSXChildren =
-      | string
-      | number
-      | boolean
-      | null
-      | undefined
-      | View
-      | Html
-      | (string | number | boolean | null | undefined | View | Html)[];
+    type JSXChildren = RuneChildren;
 
     type ElementProps<T extends keyof HTMLElementTagNameMap> = Omit<
       Partial<HTMLElementTagNameMap[T]>,

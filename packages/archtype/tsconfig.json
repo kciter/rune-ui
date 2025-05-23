@@ -12,6 +12,6 @@
       "@rune-ui/jsx/src/jsx-runtime"
     ]
   },
-  "include": ["src"],
+  "include": ["src", "../types/src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }

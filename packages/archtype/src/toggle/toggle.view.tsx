@@ -1,6 +1,6 @@
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
-import { RuneElement, RuneChildren } from "@/types";
+import { RuneElement, RuneChildren } from "@rune-ui/types";
 import { toggleParts } from "./toggle.anatomy";
 import { createToggleMachine } from "./toggle.machine";
 

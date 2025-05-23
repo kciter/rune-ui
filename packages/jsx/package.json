@@ -32,6 +32,7 @@
     "@rune-ui/builder": "workspace:*",
     "@rune-ui/eslint-config": "workspace:*",
     "@rune-ui/typescript-config": "workspace:*",
+    "@rune-ui/types": "workspace:*",
     "@types/node": "^22.15.21",
     "esbuild": "^0.25.4",
     "eslint": "^9.27.0",

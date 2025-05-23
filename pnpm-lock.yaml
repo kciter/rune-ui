@@ -158,6 +158,9 @@ importers:
       '@rune-ui/machine':
         specifier: workspace:*
         version: link:../machine
+      '@rune-ui/types':
+        specifier: workspace:*
+        version: link:../types
       '@rune-ui/typescript-config':
         specifier: workspace:*
         version: link:../../internals/typescript-config
@@ -180,6 +183,9 @@ importers:
       '@rune-ui/eslint-config':
         specifier: workspace:*
         version: link:../../internals/eslint-config
+      '@rune-ui/types':
+        specifier: workspace:*
+        version: link:../types
       '@rune-ui/typescript-config':
         specifier: workspace:*
         version: link:../../internals/typescript-config
@@ -200,6 +206,28 @@ importers:
         version: 6.3.5(@types/node@22.15.21)
 
   packages/machine:
+    dependencies:
+      rune-ts:
+        specifier: ^0.9.3
+        version: 0.9.3
+    devDependencies:
+      '@rune-ui/builder':
+        specifier: workspace:*
+        version: link:../../internals/builder
+      '@rune-ui/eslint-config':
+        specifier: workspace:*
+        version: link:../../internals/eslint-config
+      '@rune-ui/typescript-config':
+        specifier: workspace:*
+        version: link:../../internals/typescript-config
+      eslint:
+        specifier: ^9.18.0
+        version: 9.27.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  packages/types:
     dependencies:
       rune-ts:
         specifier: ^0.9.3
