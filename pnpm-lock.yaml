@@ -63,9 +63,6 @@ importers:
       '@storybook/test':
         specifier: ^8.6.14
         version: 8.6.14(storybook@8.6.14(prettier@3.5.3))
-      chromatic:
-        specifier: ^11.28.3
-        version: 11.28.3
       eslint:
         specifier: ^9.18.0
         version: 9.27.0
