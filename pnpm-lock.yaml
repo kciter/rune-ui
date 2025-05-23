@@ -33,9 +33,9 @@ importers:
       '@chromatic-com/storybook':
         specifier: ^3.2.6
         version: 3.2.6(react@19.1.0)(storybook@8.6.14(prettier@3.5.3))
-      '@rune-ui/archtype':
+      '@rune-ui/archetype':
         specifier: workspace:*
-        version: link:../../packages/archtype
+        version: link:../../packages/archetype
       '@rune-ui/eslint-config':
         specifier: workspace:*
         version: link:../../internals/eslint-config
@@ -137,7 +137,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  packages/archtype:
+  packages/archetype:
     dependencies:
       rune-ts:
         specifier: ^0.9.3
