@@ -1,11 +1,6 @@
 {
-  "extends": "@rune-ui/typescript-config/base.json",
+  "extends": "@rune-ui/typescript-config/library.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "noEmit": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "jsxFactory": "createHtml",
     "jsxFragmentFactory": "Fragment",
@@ -13,6 +8,6 @@
       "@rune-ui/jsx/src/jsx-runtime"
     ]
   },
-  "include": ["**/*"],
+  "include": ["src", "index.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

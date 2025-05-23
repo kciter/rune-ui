@@ -1,9 +1,8 @@
 {
-  "extends": "@rune-ui/typescript-config/base.json",
+  "extends": "@rune-ui/typescript-config/library.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "noEmit": true
+    "outDir": "dist",
   },
-  "include": ["**/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
