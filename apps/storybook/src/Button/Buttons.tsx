@@ -1,4 +1,4 @@
-import { Button } from "@rune-ui/archtype";
+import { Button } from "@rune-ui/archetype";
 import { html, View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 

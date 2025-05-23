@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/html";
-import { Box } from "@rune-ui/archtype";
+import { Box } from "@rune-ui/archetype";
 
 const meta = {
   title: "Component/Box",

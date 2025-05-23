@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/html";
-import { Affix, PortalView } from "@rune-ui/archtype";
+import { Affix, PortalView } from "@rune-ui/archetype";
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 

@@ -1,6 +1,6 @@
 import type { Meta } from "@storybook/html";
-import { AspectRatio } from "@rune-ui/archtype";
-import { Box } from "@rune-ui/archtype";
+import { AspectRatio } from "@rune-ui/archetype";
+import { Box } from "@rune-ui/archetype";
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 

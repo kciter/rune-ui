@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/html";
-import { Toggle } from "@rune-ui/archtype";
+import { Toggle } from "@rune-ui/archetype";
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 import styles from "./toggle.module.css";

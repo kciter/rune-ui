@@ -1,5 +1,5 @@
 {
-  "name": "@rune-ui/archtype",
+  "name": "@rune-ui/archetype",
   "version": "0.0.1",
   "license": "MIT",
   "source": "./src/index.ts",

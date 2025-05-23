@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/html";
-import { Collapsible } from "@rune-ui/archtype";
+import { Collapsible } from "@rune-ui/archetype";
 import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 import styles from "./collapsible.module.css";
