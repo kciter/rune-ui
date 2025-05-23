@@ -1,8 +1,6 @@
 import { View } from "rune-ts";
-import { createHtml } from "@rune-ui/jsx";
 
 export class PortalView<T extends object = {}> extends View<T> {
-  private id: string = `portal-${Math.random().toString(36).substring(2, 9)}`;
   private portalElement: HTMLElement | null = null;
   private observer: MutationObserver | null = null;
 
