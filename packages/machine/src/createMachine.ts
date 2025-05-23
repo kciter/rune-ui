@@ -10,9 +10,9 @@ import {
 
 export function createMachine<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 >(
-  config: StateMachineOptions<TContext, TEvent>
+  config: StateMachineOptions<TContext, TEvent>,
 ): RuneMachine<TContext, TEvent> {
   let currentState: MachineState<TContext> = {
     value: config.initial,
@@ -25,21 +25,28 @@ export function createMachine<
   // 전이(transition)를 수행하는 함수
   function transition(
     state: MachineState<TContext>,
-    event: TEvent
+    event: TEvent,
   ): MachineState<TContext> {
     const stateConfig = config.states[state.value];
 
-    if (!stateConfig || !stateConfig.on || !stateConfig.on[event.type]) {
+    if (!stateConfig || !stateConfig.on) {
       return { ...state, changed: false };
     }
 
-    const transitions = Array.isArray(stateConfig.on[event.type])
-      ? (stateConfig.on[event.type] as Transition<TContext, TEvent>[])
-      : ([stateConfig.on[event.type]] as Transition<TContext, TEvent>[]);
+    const eventType = event.type as keyof typeof stateConfig.on;
+    const transitionConfig = stateConfig.on[eventType];
+
+    if (!transitionConfig) {
+      return { ...state, changed: false };
+    }
+
+    const transitions = Array.isArray(transitionConfig)
+      ? (transitionConfig as Transition<TContext, TEvent>[])
+      : ([transitionConfig] as Transition<TContext, TEvent>[]);
 
     // 가능한 전이 중 조건(cond)을 만족하는 첫 번째 전이를 찾음
     const validTransition = transitions.find(
-      (t) => !t.cond || t.cond(state.context, event)
+      (t) => !t.cond || t.cond(state.context, event),
     );
 
     if (!validTransition) {

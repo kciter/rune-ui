@@ -11,8 +11,14 @@
   gap: 20px;
 }
 
+.root {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* 기본 스타일 */
 .track {
+  position: relative;
   width: 44px;
   height: 24px;
   background-color: #e2e8f0;

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // @ts-check
 import path from "node:path";
 import { build } from "./builder.js";

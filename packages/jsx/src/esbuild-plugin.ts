@@ -5,7 +5,7 @@ export function runeJsxEsbuildPlugin(
     jsxFactory?: string;
     jsxFragmentFactory?: string;
     importPath?: string;
-  } = {}
+  } = {},
 ): Plugin {
   const factory = options.jsxFactory ?? "createHtml";
   const fragment = options.jsxFragmentFactory ?? "Fragment";
@@ -22,7 +22,7 @@ export function runeJsxEsbuildPlugin(
         const fragPragma = `/** @jsxFrag ${fragment} */\n`;
 
         const alreadyHasImport = new RegExp(
-          `import\\s+\\{\\s*${factory}\\s*\\}\\s+from`
+          `import\\s+\\{\\s*${factory}\\s*\\}\\s+from`,
         ).test(code);
         const importStmt = alreadyHasImport
           ? ""

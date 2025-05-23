@@ -1,4 +1,4 @@
-import { on, View } from "rune-ts";
+import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 import { RuneElement, RuneChildren } from "@/types";
 import { toggleParts } from "./toggle.anatomy";
@@ -70,12 +70,6 @@ export class ToggleRoot extends View<RuneUIToggleRootProps> {
         {...toggleParts.root.attrs}
         data-state={checked ? "checked" : "unchecked"}
         data-disabled={disabled ? "true" : "false"}
-        style={`
-          display: inline-flex;
-          align-items: center;
-          cursor: ${disabled ? "not-allowed" : "pointer"};
-          ${this.data.style || ""}
-        `}
       >
         {children}
       </div>
@@ -91,11 +85,11 @@ export class ToggleRoot extends View<RuneUIToggleRootProps> {
       this.machine.send("TOGGLE");
       this.element()?.setAttribute(
         "data-state",
-        this.machine.state.context.checked ? "checked" : "unchecked"
+        this.machine.state.context.checked ? "checked" : "unchecked",
       );
       this.element()?.setAttribute(
         "data-disabled",
-        this.machine.state.context.disabled ? "true" : "false"
+        this.machine.state.context.disabled ? "true" : "false",
       );
     }
   }
@@ -111,14 +105,7 @@ export class ToggleTrack extends View<RuneUIToggleTrackProps> {
     const { children, ...rest } = this.data;
 
     return (
-      <div
-        {...rest}
-        {...toggleParts.track.attrs}
-        style={`
-          position: relative;
-          ${this.data.style || ""}
-        `}
-      >
+      <div {...rest} {...toggleParts.track.attrs}>
         {children}
       </div>
     );
@@ -135,13 +122,7 @@ export class ToggleThumb extends View<RuneUIToggleThumbProps> {
     const { children, ...rest } = this.data;
 
     return (
-      <div
-        {...rest}
-        {...toggleParts.thumb.attrs}
-        style={`
-          ${this.data.style || ""}
-        `}
-      >
+      <div {...rest} {...toggleParts.thumb.attrs}>
         {children}
       </div>
     );
@@ -158,13 +139,7 @@ export class ToggleLabel extends View<RuneUIToggleLabelProps> {
     const { children, ...rest } = this.data;
 
     return (
-      <label
-        {...rest}
-        {...toggleParts.label.attrs}
-        style={`
-          ${this.data.style || ""}
-        `}
-      >
+      <label {...rest} {...toggleParts.label.attrs}>
         {children}
       </label>
     );

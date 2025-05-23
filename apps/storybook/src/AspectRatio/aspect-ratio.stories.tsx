@@ -22,7 +22,7 @@ class AspectRatioExample extends View<{
     const { ratio, label, backgroundColor = "#0072de" } = this.data;
 
     return (
-      <AspectRatio ratio={ratio} style="max-width: 300px; margin-bottom: 20px;">
+      <AspectRatio ratio={ratio} style="width: 300px; margin-bottom: 20px;">
         <Box
           style={`
             width: 100%;
@@ -70,7 +70,7 @@ export const Standard = () =>
 export const WithImage = () =>
   new AspectRatio({
     ratio: 16 / 9,
-    style: "max-width: 500px;",
+    style: "width: 500px;",
     children: (
       <img
         src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f"

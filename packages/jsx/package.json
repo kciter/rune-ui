@@ -34,7 +34,7 @@
     "@rune-ui/typescript-config": "workspace:*",
     "@types/node": "^22.15.21",
     "esbuild": "^0.25.4",
-    "eslint": "^9.18.0",
+    "eslint": "^9.27.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },

@@ -3,7 +3,7 @@ import path from "node:path";
 import fs from "node:fs";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
-import { runeJsxEsbuildPlugin } from "@rune-ui/jsx";
+// import { runeJsxEsbuildPlugin } from "@rune-ui/jsx";
 
 /**
  * @param {string} relativePath
@@ -47,19 +47,19 @@ export async function build(relativePath) {
     format: "cjs",
     target: "es2022",
     outdir: dist,
-    plugins: [
-      runeJsxEsbuildPlugin({
-        jsxFactory: "createHtml",
-        jsxFragmentFactory: "Fragment",
-        importPath: "@rune-ui/jsx/createHtml",
-      }),
-    ],
+    // plugins: [
+    //   runeJsxEsbuildPlugin({
+    //     jsxFactory: "createHtml",
+    //     jsxFragmentFactory: "Fragment",
+    //     importPath: "@rune-ui/jsx/createHtml",
+    //   }),
+    // ],
   };
 
   tasks.push(
     esbuild
       .build(esbuildConfig)
-      .then(() => console.log(`CJS: Built ${relativePath}`))
+      .then(() => console.log(`CJS: Built ${relativePath}`)),
   );
   tasks.push(
     esbuild
@@ -68,7 +68,7 @@ export async function build(relativePath) {
         format: "esm",
         outExtension: { ".js": ".mjs" },
       })
-      .then(() => console.log(`ESM: Built ${relativePath}`))
+      .then(() => console.log(`ESM: Built ${relativePath}`)),
   );
 
   // tsup is used to emit d.ts files only (esbuild can't do that).
@@ -88,7 +88,7 @@ export async function build(relativePath) {
         silent: true,
         external: [/@rune-ui\/.+/],
       })
-      .then(() => console.log(`TSC: Built ${relativePath}`))
+      .then(() => console.log(`TSC: Built ${relativePath}`)),
   );
 
   await Promise.all(tasks);

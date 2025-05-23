@@ -18,7 +18,7 @@ class BasicToggle extends View {
   override template() {
     return (
       <div>
-        <Toggle.Root>
+        <Toggle.Root className={styles.root}>
           <Toggle.Track className={styles.track}>
             <Toggle.Thumb className={styles.thumb} />
           </Toggle.Track>
@@ -35,7 +35,7 @@ class ToggleWithLabel extends View {
   override template() {
     return (
       <div className={styles["toggle-container"]}>
-        <Toggle.Root>
+        <Toggle.Root className={styles.root}>
           <Toggle.Track className={styles.track}>
             <Toggle.Thumb className={styles.thumb} />
           </Toggle.Track>
@@ -91,7 +91,7 @@ class ToggleSizes extends View {
     return (
       <div className={styles["toggle-group"]}>
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track className={`${styles.track} ${styles["track-sm"]}`}>
               <Toggle.Thumb
                 className={`${styles.thumb} ${styles["thumb-sm"]}`}
@@ -102,7 +102,7 @@ class ToggleSizes extends View {
         </div>
 
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track className={styles.track}>
               <Toggle.Thumb className={styles.thumb} />
             </Toggle.Track>
@@ -111,7 +111,7 @@ class ToggleSizes extends View {
         </div>
 
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track className={`${styles.track} ${styles["track-lg"]}`}>
               <Toggle.Thumb
                 className={`${styles.thumb} ${styles["thumb-lg"]}`}
@@ -134,7 +134,7 @@ class StyledToggles extends View {
       <div className={styles["toggle-group"]}>
         {/* 녹색 스타일 */}
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track
               className={`${styles.track} ${styles["track-green"]}`}
             >
@@ -146,7 +146,7 @@ class StyledToggles extends View {
 
         {/* 보라색 스타일 */}
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track
               className={`${styles.track} ${styles["track-purple"]}`}
             >
@@ -158,7 +158,7 @@ class StyledToggles extends View {
 
         {/* 사각형 스타일 */}
         <div className={styles["toggle-container"]}>
-          <Toggle.Root>
+          <Toggle.Root className={styles.root}>
             <Toggle.Track
               className={`${styles.track} ${styles["track-orange"]} ${styles["track-square"]}`}
             >

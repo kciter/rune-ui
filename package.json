@@ -5,11 +5,18 @@
   "keywords": ["rune-ui", "rune", "headless-component"],
   "license": "MIT",
   "scripts": {
-    "build": "pnpm -r build",
-    "storybook": "pnpm -F storybook dev",
-    "build-storybook": "pnpm -F storybook build"
+    "lint": "pnpm -r run lint",
+    "build": "pnpm -r --parallel --filter \"./packages/**/*\" run build",
+    "build-storybook": "pnpm -F storybook build",
+    "clean": "pnpm -r run clean",
+    "dev": "pnpm -F storybook dev",
+    "format": "prettier --write ."
   },
   "devDependencies": {
+    "esbuild": "^0.25.4",
+    "eslint": "^9.27.0",
+    "prettier": "^3.5.3",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "engines": {
