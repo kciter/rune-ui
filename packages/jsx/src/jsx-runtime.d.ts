@@ -22,16 +22,6 @@ declare global {
       style?: string;
     };
 
-    export type RuneChildren = JSXChildren;
-
-    type ElementProps<T extends keyof HTMLElementTagNameMap> = Omit<
-      Partial<HTMLElementTagNameMap[T]>,
-      "style" | "children"
-    > & {
-      children?: RuneChildren;
-      style?: string;
-    };
-
     type IntrinsicElements = {
       [K in keyof HTMLElementTagNameMap]: ElementProps<K>;
     };

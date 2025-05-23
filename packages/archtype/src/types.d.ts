@@ -1,10 +1,12 @@
+/// <reference types="@rune-ui/jsx/src/jsx-runtime" />
+
 import type { View } from "rune-ts";
 
 export type RuneChildren = JSXChildren;
 
 export type RuneView =
   | View<any>
-  | JSX.IntrinsicElements
+  | JSX.Element
   | string
   | number
   | boolean
@@ -20,7 +22,7 @@ export type PropsOf<T extends As> = T extends keyof JSX.IntrinsicElements
       style?: string;
     }
   : T extends abstract new (...args: any[]) => View<infer P>
-  ? P
-  : never;
+    ? P
+    : never;
 
 export type RuneElement<T extends As> = PropsOf<T> & {};
