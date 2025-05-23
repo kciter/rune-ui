@@ -39,7 +39,7 @@ function flatten(children: Child[]): unknown[] {
   flat(children ?? []);
   // falsy 값(undefined, null, false, "")은 아예 제외
   return result.filter(
-    (v) => v !== undefined && v !== null && v !== false && v !== ""
+    (v) => v !== undefined && v !== null && v !== false && v !== "",
   );
 }
 
@@ -88,15 +88,20 @@ export function createHtml(
   if (flat.length === 1) {
     return html(
       [`<${tag}${attrStr ? " " + attrStr : ""}>`, `</${tag}>`] as any,
-      flat[0]
+      flat[0],
     );
   }
-  // 여러 children이 있을 때 템플릿 리터럴을 동적으로 생성
-  const templateStrs = [
-    `<${tag}${attrStr ? " " + attrStr : ""}>`,
-    ...Array(flat.length).fill(""),
-    `</${tag}>`,
-  ].slice(0, flat.length + 1) as unknown as TemplateStringsArray;
 
-  return html(templateStrs, ...flat);
+  // 여러 children이 있을 때
+  const parts = [`<${tag}${attrStr ? " " + attrStr : ""}>`];
+
+  // 중간 요소들 사이에 빈 문자열 추가
+  for (let i = 0; i < flat.length - 1; i++) {
+    parts.push("");
+  }
+
+  // 마지막에 닫는 태그 추가
+  parts.push(`</${tag}>`);
+
+  return html(parts as any as TemplateStringsArray, ...flat);
 }
