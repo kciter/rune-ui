@@ -5,6 +5,7 @@
     "jsx": "react",
     "jsxFactory": "createHtml",
     "jsxFragmentFactory": "Fragment",
+    "experimentalDecorators": true,
     "paths": {
       "@/*": ["./src/*"],
     },

@@ -38,6 +38,7 @@
 }
 
 .content {
+  display: none;
   overflow: hidden;
   transition: height 0.3s ease;
 }
@@ -56,4 +57,8 @@
 
 [data-disabled="true"] .trigger {
   cursor: not-allowed;
+}
+
+[data-state="expanded"] .content {
+  display: block;
 }

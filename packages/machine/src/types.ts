@@ -1,12 +1,10 @@
-import { View } from "rune-ts";
-
 export type StateValue = string;
 export type EventName = string;
 export type Context = Record<string, any>;
 
 export interface StateMachineOptions<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > {
   id: string;
   initial: StateValue;
@@ -18,7 +16,7 @@ export interface StateMachineOptions<
 
 export interface State<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > {
   on?: {
     [K in TEvent["type"]]?:
@@ -31,7 +29,7 @@ export interface State<
 
 export type Transition<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > = {
   target?: StateValue;
   actions?: Action<TContext, TEvent>[];
@@ -40,12 +38,12 @@ export type Transition<
 
 export type Action<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > = (context: TContext, event: TEvent) => void;
 
 export type Condition<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > = (context: TContext, event: TEvent) => boolean;
 
 export interface MachineState<TContext extends Context> {
@@ -56,7 +54,7 @@ export interface MachineState<TContext extends Context> {
 
 export interface RuneMachine<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName },
 > {
   id: string;
   state: MachineState<TContext>;

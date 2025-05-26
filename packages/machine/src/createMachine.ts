@@ -5,7 +5,6 @@ import {
   EventName,
   RuneMachine,
   Transition,
-  Action,
 } from "./types";
 
 export function createMachine<
@@ -37,6 +36,9 @@ export function createMachine<
     const transitionConfig = stateConfig.on[eventType];
 
     if (!transitionConfig) {
+      console.warn(
+        `No transition defined for event "${eventType}" in state "${state.value}".`,
+      );
       return { ...state, changed: false };
     }
 
@@ -50,6 +52,9 @@ export function createMachine<
     );
 
     if (!validTransition) {
+      console.warn(
+        `No valid transition found for event "${event.type}" in state "${state.value}".`,
+      );
       return { ...state, changed: false };
     }
 

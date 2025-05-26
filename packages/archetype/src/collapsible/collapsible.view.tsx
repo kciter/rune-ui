@@ -1,8 +1,9 @@
-import { View } from "rune-ts";
+import { on, View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 import { RuneElement, RuneChildren, RuneView } from "@rune-ui/types";
 import { collapsibleParts } from "./collapsible.anatomy";
-import { createCollapsibleMachine } from "./collapsible.machine";
+import { CollapsibleContext } from "./collapsible.machine";
+import { CollapsibleStateView } from "./collapsible.state";
 
 // Root 컴포넌트
 export interface RuneUICollapsibleRootProps extends RuneElement<"div"> {
@@ -27,79 +28,47 @@ export interface RuneUICollapsibleRootProps extends RuneElement<"div"> {
   children?: RuneChildren;
 }
 
-export class CollapsibleRoot extends View<RuneUICollapsibleRootProps> {
-  private machine;
+export class CollapsibleRoot extends CollapsibleStateView<RuneUICollapsibleRootProps> {
+  private unsubscribe: (() => void) | null = null;
 
-  constructor(props: RuneUICollapsibleRootProps) {
-    super(props);
+  override onMount() {
+    // 상태 변경 구독
+    this.unsubscribe = this.machine.subscribe((state) => {
+      // DOM 속성 업데이트
+      this.updateDOM(state.context);
 
-    this.machine = createCollapsibleMachine({
-      expanded: props.expanded,
-      disabled: props.disabled,
+      // 콜백 호출
+      if (this.data.onExpandedChange) {
+        this.data.onExpandedChange(state.context.expanded);
+      }
     });
   }
 
-  override onMount() {
-    const { onExpandedChange, disabled } = this.data;
-
-    // 상태 변경 시 콜백 호출
-    if (onExpandedChange) {
-      this.machine.subscribe((state) => {
-        if (state.changed) {
-          onExpandedChange(state.context.expanded);
-        }
-      });
-    }
-
-    // 비활성화 상태 변경 감지
-    if (
-      disabled !== undefined &&
-      disabled !== this.machine.state.context.disabled
-    ) {
-      this.machine.send(disabled ? "DISABLE" : "ENABLE");
+  override onUnmount() {
+    // 구독 해제 및 리소스 정리
+    if (this.unsubscribe) {
+      this.unsubscribe();
+      this.unsubscribe = null;
     }
   }
 
   override template() {
-    const { children, ...rest } = this.data;
-    const { expanded, disabled } = this.machine.state.context;
-
     return (
-      <div
-        {...rest}
-        {...collapsibleParts.root.attrs}
-        data-state={expanded ? "expanded" : "collapsed"}
-        data-disabled={disabled ? "true" : "false"}
-      >
-        {children}
+      <div {...this.data} {...collapsibleParts.root.attrs}>
+        {this.data.children}
       </div>
     );
   }
 
-  // API 메서드
-  toggle() {
-    this.machine.send("TOGGLE");
-    this._updateStateAttributes();
-  }
-
-  expand() {
-    this.machine.send("EXPAND");
-    this._updateStateAttributes();
-  }
-
-  collapse() {
-    this.machine.send("COLLAPSE");
-    this._updateStateAttributes();
-  }
-
-  private _updateStateAttributes() {
-    const { expanded, disabled } = this.machine.state.context;
+  private updateDOM(state: CollapsibleContext) {
     const element = this.element();
     if (element) {
-      element.setAttribute("data-state", expanded ? "expanded" : "collapsed");
-      element.setAttribute("data-disabled", disabled ? "true" : "false");
+      element.setAttribute(
+        "data-state",
+        state.expanded ? "expanded" : "collapsed",
+      );
+      element.setAttribute("data-disabled", state.disabled ? "true" : "false");
     }
-    this.redraw();
   }
 }
 
@@ -112,32 +81,36 @@ export class CollapsibleTrigger extends View<RuneUICollapsibleTriggerProps> {
   private root: CollapsibleRoot | null = null;
 
   override onMount() {
-    // 부모 요소 중 CollapsibleRoot 찾기
-    let parent = this.parentView;
-    while (parent) {
-      if (parent instanceof CollapsibleRoot) {
-        this.root = parent;
-        break;
-      }
-      parent = parent.parentView;
+    // Root 찾기
+    this.root = this.findRoot();
+    if (!this.root) {
+      console.warn("CollapsibleTrigger must be used within a CollapsibleRoot.");
+      return;
     }
-
-    // 클릭 이벤트 핸들러 추가
-    this.addEventListener("click", () => {
-      if (this.root) {
-        this.root.toggle();
-      }
-    });
   }
 
   override template() {
     const { children, ...rest } = this.data;
 
     return (
-      <button {...rest} {...collapsibleParts.trigger.attrs} type="button">
+      <button {...rest} {...collapsibleParts.trigger.attrs}>
         {children}
       </button>
     );
+  }
+
+  private findRoot() {
+    let root = this.parentView;
+    while (root && !(root instanceof CollapsibleRoot)) {
+      root = root.parentView;
+    }
+
+    return root as CollapsibleRoot | null;
+  }
+
+  @on("click")
+  click() {
+    this.root?.toggle();
   }
 }
 
@@ -147,20 +120,45 @@ export interface RuneUICollapsibleIndicatorProps extends RuneElement<"span"> {
    * 화살표 아이콘 (기본: ▼)
    */
   icon?: RuneView | string;
-
-  children?: RuneChildren;
 }
 
 export class CollapsibleIndicator extends View<RuneUICollapsibleIndicatorProps> {
+  private root: CollapsibleRoot | null = null;
+
+  override onMount() {
+    // Root 찾기
+    this.root = this.findRoot();
+    if (!this.root) {
+      console.warn(
+        "CollapsibleIndicator must be used within a CollapsibleRoot.",
+      );
+      return;
+    }
+  }
+
   override template() {
-    const { icon, children, ...rest } = this.data;
-    const content = icon || children || "▼";
+    const { icon, ...rest } = this.data;
+    const content = icon || "▼";
 
     return (
       <span {...rest} {...collapsibleParts.indicator.attrs}>
         {content}
       </span>
     );
+  }
+
+  private findRoot() {
+    let root = this.parentView;
+    while (root && !(root instanceof CollapsibleRoot)) {
+      root = root.parentView;
+    }
+
+    return root as CollapsibleRoot | null;
+  }
+
+  @on("click")
+  click() {
+    this.root?.expand();
   }
 }
 
@@ -178,23 +176,6 @@ export class CollapsibleContent extends View<RuneUICollapsibleContentProps> {
         {children}
       </div>
     );
-  }
-
-  override onRender(): void {
-    // 상위 요소의 상태에 따라 표시/숨김
-    let parent = this.parentView;
-    while (parent) {
-      if (parent instanceof CollapsibleRoot) {
-        const expanded =
-          parent.element()?.getAttribute("data-state") === "expanded";
-        const element = this.element();
-        if (element) {
-          element.style.display = expanded ? "" : "none";
-        }
-        break;
-      }
-      parent = parent.parentView;
-    }
   }
 }
 
