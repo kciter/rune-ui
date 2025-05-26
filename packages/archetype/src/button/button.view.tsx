@@ -19,12 +19,36 @@ export class ButtonRoot extends View<RuneUIButtonRootProps> {
   }
 }
 
+// ButtonPart - 공통 기능을 가진 뷰 컴포넌트
+class ButtonPart<T extends object = {}> extends View<T> {
+  protected root: ButtonRoot | null = null;
+
+  protected onMount(): void {
+    // Root 컴포넌트 찾기
+    this.root = this.findRoot();
+    if (!this.root) {
+      console.warn(
+        `${this.constructor.name} component must be used within a ButtonRoot.`,
+      );
+    }
+  }
+
+  protected findRoot() {
+    let root = this.parentView;
+    while (root && !(root instanceof ButtonRoot)) {
+      root = root.parentView;
+    }
+
+    return root as ButtonRoot | null;
+  }
+}
+
 // Button 컴포넌트의 내부
 export interface RuneUIButtonInnerProps extends RuneElement<"span"> {
   children?: RuneChildren;
 }
 
-export class ButtonInner extends View<RuneUIButtonInnerProps> {
+export class ButtonInner extends ButtonPart<RuneUIButtonInnerProps> {
   override template() {
     const { children, ...rest } = this.data;
 
@@ -41,7 +65,7 @@ export interface RuneUIButtonLeftIconProps extends RuneElement<"span"> {
   icon: RuneView;
 }
 
-export class ButtonLeftIcon extends View<RuneUIButtonLeftIconProps> {
+export class ButtonLeftIcon extends ButtonPart<RuneUIButtonLeftIconProps> {
   override template() {
     const { icon, ...rest } = this.data;
     return (
@@ -57,7 +81,7 @@ export interface RuneUIButtonLabelProps extends RuneElement<"span"> {
   children?: RuneChildren;
 }
 
-export class ButtonLabel extends View<RuneUIButtonLabelProps> {
+export class ButtonLabel extends ButtonPart<RuneUIButtonLabelProps> {
   override template() {
     const { children, ...rest } = this.data;
     return (
@@ -73,7 +97,7 @@ export interface RuneUIButtonRightIconProps extends RuneElement<"span"> {
   icon: RuneView;
 }
 
-export class ButtonRightIcon extends View<RuneUIButtonRightIconProps> {
+export class ButtonRightIcon extends ButtonPart<RuneUIButtonRightIconProps> {
   override template() {
     const { icon, ...rest } = this.data;
     return (

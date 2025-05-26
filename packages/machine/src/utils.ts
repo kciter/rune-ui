@@ -3,12 +3,12 @@ import { Context, EventName } from "./types";
 // 여러 액션을 결합하는 헬퍼 함수
 export function assign<
   TContext extends Context,
-  TEvent extends { type: EventName }
+  TEvent extends { type: EventName } = { type: EventName },
 >(
   assignment:
     | Partial<TContext>
-    | ((context: TContext, event: TEvent) => Partial<TContext>)
-) {
+    | ((context: TContext, event: TEvent) => Partial<TContext>),
+): (context: TContext, event: TEvent) => void {
   return (context: TContext, event: TEvent) => {
     const update =
       typeof assignment === "function"

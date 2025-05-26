@@ -1,106 +1,64 @@
-import { View } from "rune-ts";
 import { createHtml } from "@rune-ui/jsx";
 import { RuneElement, RuneChildren } from "@rune-ui/types";
 import { toggleParts } from "./toggle.anatomy";
-import { createToggleMachine } from "./toggle.machine";
+import { ToggleStateView, ToggleStateViewProps } from "./toggle.state";
+import { on, View } from "rune-ts";
 
-// Root 컴포넌트
-export interface RuneUIToggleRootProps extends RuneElement<"div"> {
-  /**
-   * 토글의 상태
-   */
-  checked?: boolean;
-
-  /**
-   * 토글 상태가 변경될 때 호출되는 콜백
-   */
-  onCheckedChange?: (checked: boolean) => void;
-
-  /**
-   * 토글 비활성화 여부
-   */
-  disabled?: boolean;
-
-  /**
-   * 컴포넌트 자식 요소
-   */
-  children?: RuneChildren;
-}
-
-export class ToggleRoot extends View<RuneUIToggleRootProps> {
-  private machine;
-
-  constructor(props: RuneUIToggleRootProps) {
-    super(props);
-
-    this.machine = createToggleMachine({
-      checked: props.checked,
-      disabled: props.disabled,
-    });
-  }
-
-  override onMount() {
-    const { onCheckedChange, disabled } = this.data;
-
-    // 상태 변경 시 콜백 호출
-    if (onCheckedChange) {
-      this.machine.subscribe((state) => {
-        if (state.changed) {
-          onCheckedChange(state.context.checked);
-        }
-      });
-    }
-
-    // 비활성화 상태 변경 감지
-    if (
-      disabled !== undefined &&
-      disabled !== this.machine.state.context.disabled
-    ) {
-      this.machine.send(disabled ? "DISABLE" : "ENABLE");
-    }
-  }
-
+// Root 컴포넌트 - 상태 관리
+export class ToggleRoot extends ToggleStateView {
   override template() {
     const { children, ...rest } = this.data;
-    const { checked, disabled } = this.machine.state.context;
 
     return (
       <div
         {...rest}
         {...toggleParts.root.attrs}
-        data-state={checked ? "checked" : "unchecked"}
-        data-disabled={disabled ? "true" : "false"}
+        data-state={this.isChecked() ? "checked" : "unchecked"}
+        data-disabled={this.isDisabled() ? "true" : "false"}
       >
         {children}
       </div>
     );
   }
 
-  override onRender() {
-    this.addEventListener("click", () => this.toggle());
-  }
-
-  toggle() {
-    if (!this.data.disabled) {
-      this.machine.send("TOGGLE");
-      this.element()?.setAttribute(
-        "data-state",
-        this.machine.state.context.checked ? "checked" : "unchecked",
-      );
-      this.element()?.setAttribute(
-        "data-disabled",
-        this.machine.state.context.disabled ? "true" : "false",
-      );
+  @on("click")
+  handleClick() {
+    if (!this.isDisabled()) {
+      this.toggle();
     }
   }
 }
 
-// Track 컴포넌트
+// TogglePart - 공통 기능을 가진 뷰 컴포넌트
+class TogglePart<T extends object = {}> extends View<T> {
+  protected root: ToggleRoot | null = null;
+
+  protected onMount(): void {
+    // Root 컴포넌트 찾기
+    this.root = this.findRoot();
+    if (!this.root) {
+      console.warn(
+        `${this.constructor.name} component must be used within a ToggleRoot.`,
+      );
+    }
+  }
+
+  protected findRoot() {
+    let root = this.parentView;
+    while (root && !(root instanceof ToggleRoot)) {
+      root = root.parentView;
+    }
+
+    return root as ToggleRoot | null;
+  }
+}
+
+// Track 컴포넌트 - 배경 트랙
 export interface RuneUIToggleTrackProps extends RuneElement<"div"> {
   children?: RuneChildren;
 }
 
-export class ToggleTrack extends View<RuneUIToggleTrackProps> {
+export class ToggleTrack extends TogglePart<RuneUIToggleTrackProps> {
   override template() {
     const { children, ...rest } = this.data;
 
@@ -112,12 +70,12 @@ export class ToggleTrack extends View<RuneUIToggleTrackProps> {
   }
 }
 
-// Thumb 컴포넌트
+// Thumb 컴포넌트 - 움직이는 동그라미
 export interface RuneUIToggleThumbProps extends RuneElement<"div"> {
   children?: RuneChildren;
 }
 
-export class ToggleThumb extends View<RuneUIToggleThumbProps> {
+export class ToggleThumb extends TogglePart<RuneUIToggleThumbProps> {
   override template() {
     const { children, ...rest } = this.data;
 
@@ -129,12 +87,12 @@ export class ToggleThumb extends View<RuneUIToggleThumbProps> {
   }
 }
 
-// Label 컴포넌트
+// Label 컴포넌트 - 텍스트 레이블
 export interface RuneUIToggleLabelProps extends RuneElement<"label"> {
   children?: RuneChildren;
 }
 
-export class ToggleLabel extends View<RuneUIToggleLabelProps> {
+export class ToggleLabel extends TogglePart<RuneUIToggleLabelProps> {
   override template() {
     const { children, ...rest } = this.data;
 
