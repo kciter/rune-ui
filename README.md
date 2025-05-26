@@ -57,9 +57,6 @@ Rune UI is built on several core packages:
 * @rune-ui/anatomy: Component structure definitions
 * @rune-ui/types: TypeScript type definitions
 
-## Links
-* [Chromatic Storybook](https://683027435fe61e7cfdc8e182-fzgutxxiey.chromatic.com)
-
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request.
 
