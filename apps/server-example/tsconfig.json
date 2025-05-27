@@ -1,0 +1,13 @@
+{
+  "extends": "@rune-ui/typescript-config/library.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "createHtml",
+    "jsxFragmentFactory": "Fragment",
+    "types": [
+      "@rune-ui/jsx/src/jsx-runtime"
+    ]
+  },
+  "include": ["src", "index.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "rune-ts": "^0.9.3"
+    "rune-ts": "^0.9.3",
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",

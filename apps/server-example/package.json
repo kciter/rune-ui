@@ -1,0 +1,25 @@
+{
+  "name": "@rune-ui/server-example",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --max-warnings 0 .",
+    "dev": "rune dev",
+    "build": "storybook build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rune-ui/server": "workspace:*",
+    "@rune-ui/archetype": "workspace:*",
+    "rune-ts": "^0.9.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@rune-ui/eslint-config": "workspace:*",
+    "@rune-ui/typescript-config": "workspace:*",
+    "@rune-ui/jsx": "workspace:*",
+    "@types/express": "^5.0.2",
+    "eslint": "^9.18.0",
+    "esbuild-register": "^3.6.0",
+    "typescript": "^5.7.3"
+  }
+}
