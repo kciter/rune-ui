@@ -45,10 +45,8 @@ export class TestComponent extends View<TestComponentProps> {
     console.log("TestComponent mounted with data");
     this.element().addEventListener("click", () => {
       console.log("Button clicked in TestComponent");
-      this.data.message = "Button was clickedss!";
+      this.data.message = "Button was clicked!";
       this.redraw();
     });
   }
 }
-
-// TestComponent는 이미 export되어 있으므로 별도의 window 할당 불필요

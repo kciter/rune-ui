@@ -124,7 +124,16 @@ async function buildClientPage(
                   contents: `
 // Virtual @rune-ui/server module for client-side
 export class RunePage {
-  constructor() {}
+  constructor(props = {}) {
+    this.data = props;
+  }
+
+  // 클라이언트에서 필요한 최소한의 메서드만 포함
+  hydrateFromSSR(element) {
+    console.log('💧 RunePage hydrated on client');
+    return this;
+  }
+
   static getMetadata() {
     return {
       title: "Default Title",
@@ -132,8 +141,12 @@ export class RunePage {
     };
   }
 }
+
+// View 클래스도 최소한으로 제공
 export class View {
-  constructor() {}
+  constructor(props = {}) {
+    this.data = props;
+  }
 }
 `,
                   loader: "js",

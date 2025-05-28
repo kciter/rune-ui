@@ -22,8 +22,8 @@ export class PageRenderer {
     try {
       const pageInstance = new PageComponent(pageProps);
 
-      // PageComponent (클래스 자체)에서 정적 메서드 호출
-      const metadata = (PageComponent as any).getMetadata?.() || {
+      // 인스턴스 메서드에서 메타데이터 가져오기
+      const metadata = (pageInstance as any).getMetadata?.() || {
         title: "Rune App",
         description: "",
       };

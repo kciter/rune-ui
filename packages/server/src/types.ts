@@ -39,12 +39,7 @@ export interface ApiModule {
 
 export interface PageModule {
   default: new (props: any) => View<any>;
-  getServerSideProps?: (context: {
-    params?: Record<string, string>;
-    query?: Record<string, string>;
-    req: Request;
-    res: Response;
-  }) => Promise<{ props: any }> | { props: any };
+  // getServerSideProps는 이제 인스턴스 메서드이므로 여기서 제거
 }
 
 export interface Route {

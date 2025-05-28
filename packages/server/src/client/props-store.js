@@ -98,10 +98,6 @@ class PropsStore {
                 props: data,
                 timestamp: Date.now(),
               });
-              console.log(
-                `📦 PropsStore: Loaded data for ${componentName} (${componentId}):`,
-                data,
-              );
             }
           });
         }

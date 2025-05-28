@@ -257,14 +257,43 @@ export class RuneServer {
           if (module && module.default) {
             const query = req.query as Record<string, string>;
 
+            // getServerSideProps 호출하여 props 가져오기
+            let pageProps = { params, query, pathname };
+
+            // 인스턴스를 먼저 생성하여 getServerSideProps 호출
+            const tempPageInstance = new (module.default as any)(pageProps);
+
+            if (tempPageInstance.getServerSideProps) {
+              try {
+                const result = await tempPageInstance.getServerSideProps({
+                  params,
+                  query,
+                  req,
+                  res,
+                });
+
+                if (result && result.props) {
+                  // 기본 props와 getServerSideProps의 결과를 병합
+                  pageProps = { ...pageProps, ...result.props };
+                }
+              } catch (error) {
+                console.error("getServerSideProps error:", error);
+                if (this.options.dev) {
+                  // 개발 모드에서는 에러 페이지 렌더링
+                  const errorHtml = this.pageRenderer["renderErrorPage"](
+                    error,
+                    pageProps,
+                  );
+                  res.status(500).send(errorHtml);
+                  return;
+                }
+                // 프로덕션에서는 기본 props로 계속 진행
+              }
+            }
+
             const html = await this.pageRenderer.renderPage(
               module.default as any,
-              { params, query, pathname },
-            );
-
-            // Critical log:
-            console.log(
-              `RUNE DEBUG: RuneServer.setupPageRoutes - renderPage returned. Type: ${typeof html}, Value (first 100 chars): ${String(html).substring(0, 100)}`,
+              pageProps,
             );
 
             res.setHeader("Content-Type", "text/html");
@@ -305,8 +334,6 @@ export class RuneServer {
 // Rune UI Client Runtime
 (function() {
   'use strict';
-
-  console.log('🎯 Rune UI Client initialized');
 
   // 전역 상태 초기화
   window.__RUNE__ = {
@@ -438,18 +465,18 @@ class PropsStore {
     this.data = {};
     this.isClient = typeof window !== 'undefined';
   }
-  
+
   set(id, props) {
     this.data[id] = props;
   }
-  
+
   get(id) {
     return this.data[id] || {};
   }
-  
+
   loadFromDOM() {
     if (!this.isClient) return;
-    
+
     // __RUNE_DATA__ 스크립트 태그에서 컴포넌트 데이터 로드
     const runeDataScripts = document.querySelectorAll('script.__RUNE_DATA__');
     runeDataScripts.forEach((script) => {
@@ -459,7 +486,7 @@ class PropsStore {
           // 컴포넌트 ID 찾기 - 연관된 element의 data-rune-id 사용
           const componentName = data.name;
           let componentId = null;
-          
+
           // 같은 클래스를 가진 element 찾기
           const elements = document.querySelectorAll(\`[data-rune="\${componentName}"]\`);
           elements.forEach(element => {

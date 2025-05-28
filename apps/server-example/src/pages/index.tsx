@@ -8,7 +8,7 @@ interface HomePageProps {
 }
 
 export default class HomePage extends RunePage<HomePageProps> {
-  static getMetadata() {
+  getMetadata() {
     return {
       title: "Rune UI - Home",
       description: "Welcome to Rune UI server framework",
@@ -17,7 +17,7 @@ export default class HomePage extends RunePage<HomePageProps> {
     };
   }
 
-  static async getServerSideProps() {
+  async getServerSideProps() {
     return {
       props: {
         message: "Hello from server side!",

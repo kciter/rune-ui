@@ -14,14 +14,14 @@ interface UserPageProps {
 }
 
 export default class UserPage extends RunePage<UserPageProps> {
-  static getMetadata() {
+  getMetadata() {
     return {
       title: "User Profile - Rune UI",
       description: "User profile page demonstrating dynamic routing",
     };
   }
 
-  static async getServerSideProps(context: any) {
+  async getServerSideProps(context: any) {
     const { id } = context.params;
 
     // 실제 앱에서는 데이터베이스에서 가져올 데이터
