@@ -51,6 +51,16 @@ class RuneHydrator {
           console.log(
             `💧 RuneHydrator: ${pageClassName} hydrated successfully`,
           );
+
+          // RunePage 하이드레이션 후, 그 안의 모든 rune 컴포넌트들을 하이드레이션 완료로 표시
+          const childElements = rootElement.querySelectorAll("[data-rune]");
+          childElements.forEach((element) => {
+            // RunePage 내부의 컴포넌트들도 개별적으로 하이드레이션이 필요할 수 있으므로
+            // 완료 표시를 하지 않음
+            console.log(
+              `💧 RuneHydrator: Found ${element.getAttribute("data-rune")} inside RunePage, will hydrate individually`,
+            );
+          });
         } else {
           console.warn(
             `💧 RuneHydrator: ${pageClassName} does not have hydrateFromSSR method`,
@@ -73,6 +83,14 @@ class RuneHydrator {
     runeElements.forEach((element) => {
       const componentName = element.getAttribute("data-rune");
       const componentId = element.getAttribute("data-rune-id");
+
+      // 이미 하이드레이션된 요소는 건너뛰기
+      if (element.__rune_hydrated) {
+        console.log(
+          `💧 RuneHydrator: ${componentName} already hydrated, skipping`,
+        );
+        return;
+      }
 
       let props = {};
 
@@ -109,6 +127,11 @@ class RuneHydrator {
             try {
               const instance = new ComponentClass(props);
               instance.hydrateFromSSR(element);
+              // 하이드레이션 완료 표시
+              element.__rune_hydrated = true;
+              console.log(
+                `💧 RuneHydrator: ${componentName} hydrated successfully`,
+              );
             } catch (e) {
               console.error(
                 `💧 RuneHydrator: Error hydrating component "${componentName}"`,
@@ -122,6 +145,7 @@ class RuneHydrator {
                 `💧 RuneHydrator: Component "${componentName}" does not have hydrateFromSSR, attempting createAndHydrate (legacy).`,
               );
               ComponentClass.createAndHydrate(element, props);
+              element.__rune_hydrated = true;
             } else {
               console.error(
                 `💧 RuneHydrator: Component class "${componentName}" found on window object, but it lacks a hydrateFromSSR method and createAndHydrate static method.`,

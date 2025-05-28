@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import type { PageModule, RunePageProps } from "../types";
 import { RunePage } from "./page";
-import { setSsrContextInJsx } from "@rune-ui/jsx";
+import { setSsrContext, getPropsStore } from "../ssr/ssr-context";
 import { Document } from "./document";
+import path from "path";
 
 export class PageRenderer {
   constructor(
@@ -17,8 +18,9 @@ export class PageRenderer {
   async renderPage(
     PageComponent: PageModule["default"], // 타입을 PageModule['default']로 변경
     pageProps: any,
+    route?: any, // 라우트 정보 추가
   ): Promise<string> {
-    setSsrContextInJsx(true); // SSR 컨텍스트 시작
+    setSsrContext(true); // SSR 컨텍스트 시작
     try {
       const pageInstance = new PageComponent(pageProps);
 
@@ -32,15 +34,23 @@ export class PageRenderer {
 
       // 페이지별 클라이언트 스크립트 경로 추가
       let pageClientScriptPath = "";
-      // isDev 조건 제거: 개발 모드에서도 페이지별 클라이언트 스크립트가 필요함
-      if (this.pagesDir) {
-        const pageName = PageComponent.name.replace(/Page$/, "").toLowerCase();
-        if (pageName) {
-          pageClientScriptPath = `${this.clientAssetsPrefix}/${pageName}.js`;
-        }
+      if (route && route.filePath) {
+        // 라우트 파일 경로에서 클라이언트 스크립트 이름 추출
+        const relativePath = path.relative(this.pagesDir, route.filePath);
+        const scriptName = relativePath
+          .replace(/\.tsx?$/, "") // 확장자 제거
+          .replace(/\\/g, "/"); // Windows 경로 정규화
+        pageClientScriptPath = `${this.clientAssetsPrefix}/${scriptName}.js`;
+        console.log(
+          `📁 [PageRenderer] Page script path: ${pageClientScriptPath} (from ${route.filePath})`,
+        );
       }
 
       const pageContent = (pageInstance as any).template(); // template() 사용
+
+      // Props store 데이터를 Document로 전달하기 위해 Map을 Object로 변환
+      const propsStore = getPropsStore();
+      const propsStoreData = Object.fromEntries(propsStore);
 
       const documentData = {
         metadata: metadata,
@@ -48,6 +58,7 @@ export class PageRenderer {
         pageData: pageProps,
         clientScript: clientScript, // 사용자 정의 클라이언트 스크립트
         pageClientScriptPath: pageClientScriptPath, // 페이지별 자동 생성 스크립트
+        propsStoreData: propsStoreData, // Props store 데이터 추가
       };
 
       const documentComponent = new DocumentClass(documentData);
@@ -55,7 +66,7 @@ export class PageRenderer {
       // documentComponent.toHtmlSSR().toString() 대신 오버라이드한 toHtml() 사용
       return documentComponent.toHtml(true); // isSSR = true 전달
     } finally {
-      setSsrContextInJsx(false); // SSR 컨텍스트 해제
+      setSsrContext(false); // SSR 컨텍스트 해제
     }
   }
 

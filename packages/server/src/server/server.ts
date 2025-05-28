@@ -294,6 +294,7 @@ export class RuneServer {
             const html = await this.pageRenderer.renderPage(
               module.default as any,
               pageProps,
+              route, // route 정보 추가
             );
 
             res.setHeader("Content-Type", "text/html");

@@ -18,6 +18,7 @@ export default class HomePage extends RunePage<HomePageProps> {
   }
 
   async getServerSideProps() {
+    console.log("🚀 [HomePage] getServerSideProps called!!");
     return {
       props: {
         message: "Hello from server side!",
@@ -33,7 +34,7 @@ export default class HomePage extends RunePage<HomePageProps> {
       <div style="font-family: 'Inter', system-ui, sans-serif; width: 800px; margin: 0 auto; padding: 2rem;">
         <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
           <h1 style="margin: 0 0 1rem 0; font-size: 2.5rem; font-weight: 700;">
-            🎯 Welcome to Rune UI
+            🎯 Welcome to Rune UI - UPDATED!
           </h1>
           <p style="font-size: 1.2rem; margin: 0; opacity: 0.9;">
             A powerful SSR framework built on Rune

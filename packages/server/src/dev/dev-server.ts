@@ -131,6 +131,22 @@ export class RunePage {
   // 클라이언트에서 필요한 최소한의 메서드만 포함
   hydrateFromSSR(element) {
     console.log('💧 RunePage hydrated on client');
+    
+    // 라이프사이클 메서드 호출
+    try {
+      if (typeof this.onMount === 'function') {
+        console.log('🔄 Calling onMount for', this.constructor.name);
+        this.onMount();
+      }
+      
+      if (typeof this.onRender === 'function') {
+        console.log('🔄 Calling onRender for', this.constructor.name);
+        this.onRender();
+      }
+    } catch (error) {
+      console.error('❌ Error calling lifecycle methods:', error);
+    }
+    
     return this;
   }
 

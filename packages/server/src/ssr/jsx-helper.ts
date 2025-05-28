@@ -1,5 +1,5 @@
-import { html as runeHtmlUtil, View } from "rune-ts";
-import type { Html } from "rune-ts";
+import { html as runeHtmlUtil, View, Html } from "rune-ts";
+import { SsrAwareViewWrapper, isSSRContext } from "./ssr-context";
 
 type Props = Record<string, unknown>;
 type Child = string | boolean | View | Html | undefined | null | Child[];
@@ -41,11 +41,11 @@ function flatten(children: Child[]): unknown[] {
   return result;
 }
 
-export function createHtml(
+export function createSsrHtml(
   tag: string | (new (...args: any[]) => View<any>),
   props: Props = {},
   ...children: Child[]
-): Html | View<any> {
+): Html | SsrAwareViewWrapper {
   if (typeof tag !== "string") {
     const mergedProps = {
       ...props,
@@ -53,7 +53,14 @@ export function createHtml(
         ? { children: children.length === 1 ? children[0] : children }
         : {}),
     };
-    return new tag(mergedProps);
+    const componentInstance = new tag(mergedProps);
+
+    // SSR 컨텍스트에서만 SsrAwareViewWrapper 사용
+    if (isSSRContext()) {
+      return new SsrAwareViewWrapper(componentInstance);
+    }
+
+    return componentInstance;
   }
 
   const normalizedProps = { ...props };
@@ -66,7 +73,11 @@ export function createHtml(
     .map(([k, v]) => {
       if (v === true) return k;
       if (v === false || v == null) return "";
-      if (typeof v === "function" || v instanceof View) {
+      if (
+        typeof v === "function" ||
+        v instanceof View ||
+        v instanceof SsrAwareViewWrapper
+      ) {
         return "";
       }
       if (Array.isArray(v)) {

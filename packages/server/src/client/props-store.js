@@ -124,4 +124,4 @@ if (typeof window !== "undefined") {
   }
 }
 
-export { PropsStore };
+window.PropsStore = PropsStore;
