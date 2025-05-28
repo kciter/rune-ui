@@ -76,43 +76,65 @@ class RuneClientRouter {
       throw new Error("Page content containers not found");
     }
 
+    // 새 페이지의 클라이언트 스크립트 찾기 및 로드
+    const newScripts = newDoc.querySelectorAll('script[src*="/assets/"]');
+    for (const script of newScripts) {
+      if (
+        script.src &&
+        script.src.includes("/assets/") &&
+        script.src.endsWith(".js")
+      ) {
+        // 이미 로드된 스크립트인지 확인
+        const existingScript = document.querySelector(
+          `script[src="${script.src}"]`,
+        );
+        if (!existingScript) {
+          console.log("🔄 Loading new page script:", script.src);
+          await this.loadScript(script.src);
+        }
+      }
+    }
+
+    console.log("✅ All scripts loaded, updating DOM...");
+
     // 페이드 전환
     // currentContent.style.opacity = '0';
     // currentContent.style.transition = 'opacity 150ms ease-out';
 
-    setTimeout(() => {
-      currentContent.innerHTML = newContent.innerHTML;
+    // 스크립트 로드 완료 후 DOM 업데이트
+    currentContent.innerHTML = newContent.innerHTML;
 
-      // 스크립트 처리
-      const scriptTags = newDoc.querySelectorAll("script");
-      scriptTags.forEach((script) => {
-        if (
-          script.textContent &&
-          script.textContent.includes("__RUNE_DATA__")
-        ) {
-          try {
-            eval(script.textContent);
-          } catch (e) {}
-        }
-      });
-
-      // 메타 태그 업데이트
-      if (newDoc.title) document.title = newDoc.title;
-
-      currentContent.style.opacity = "1";
-      setTimeout(() => (currentContent.style.transition = ""), 150);
-
-      if (pushState) {
-        history.pushState({ url }, "", url);
+    // 스크립트 처리
+    const scriptTags = newDoc.querySelectorAll("script");
+    scriptTags.forEach((script) => {
+      if (script.textContent && script.textContent.includes("__RUNE_DATA__")) {
+        try {
+          eval(script.textContent);
+        } catch (e) {}
       }
+    });
 
-      window.scrollTo(0, 0);
+    // 메타 태그 업데이트
+    if (newDoc.title) document.title = newDoc.title;
 
-      // 하이드레이션 다시 실행
-      if (window.__RUNE__.hydrator) {
-        window.__RUNE__.hydrator.hydrate();
-      }
-    }, 0);
+    currentContent.style.opacity = "1";
+    setTimeout(() => (currentContent.style.transition = ""), 150);
+
+    if (pushState) {
+      history.pushState({ url }, "", url);
+    }
+
+    window.scrollTo(0, 0);
+
+    console.log("✅ DOM updated, starting hydration...");
+
+    // 스크립트 로드 완료 후 잠시 기다려서 컴포넌트 등록이 완료되도록 함
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // 하이드레이션 다시 실행 (스크립트 로드 완료 후)
+    if (window.__RUNE__.hydrator) {
+      window.__RUNE__.hydrator.hydrate();
+    }
   }
 
   showLoadingIndicator() {
@@ -144,5 +166,74 @@ class RuneClientRouter {
   hideLoadingIndicator() {
     const indicator = document.querySelector("#__rune_loading__");
     if (indicator) indicator.remove();
+  }
+
+  // 스크립트를 동적으로 로드하는 메서드
+  async loadScript(src) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("🔄 Loading script as ES6 module:", src);
+
+        // ES6 모듈로 동적 import 시도
+        const module = await import(src + "?t=" + Date.now());
+        console.log("✅ ES6 module loaded successfully:", src);
+        console.log("📦 Module exports:", Object.keys(module));
+
+        // 모듈의 export된 컴포넌트들을 window에 등록
+        Object.entries(module).forEach(([name, component]) => {
+          if (
+            typeof component === "function" &&
+            (name.endsWith("Component") || name.endsWith("Page"))
+          ) {
+            window[name] = component;
+            console.log(`🔗 Registered ${name} to window object`);
+          }
+        });
+
+        // 새로 로드된 컴포넌트들이 window에 등록되었는지 확인
+        const newComponents = Object.keys(window).filter(
+          (key) => key.endsWith("Component") || key.endsWith("Page"),
+        );
+        console.log(
+          "🔍 Components available after script load:",
+          newComponents,
+        );
+
+        resolve();
+      } catch (error) {
+        console.warn(
+          "⚠️ ES6 import failed, falling back to script tag:",
+          error.message,
+        );
+
+        // ES6 import 실패 시 일반 스크립트 태그로 fallback
+        const script = document.createElement("script");
+        script.src = src;
+        script.type = "module";
+        script.async = true;
+
+        script.onload = () => {
+          console.log("✅ Script loaded successfully (fallback):", src);
+
+          // 새로 로드된 컴포넌트들이 window에 등록되었는지 확인
+          const newComponents = Object.keys(window).filter(
+            (key) => key.endsWith("Component") || key.endsWith("Page"),
+          );
+          console.log(
+            "🔍 Components available after script load (fallback):",
+            newComponents,
+          );
+
+          resolve();
+        };
+
+        script.onerror = () => {
+          console.error("❌ Failed to load script (fallback):", src);
+          reject(new Error(`Failed to load script: ${src}`));
+        };
+
+        document.head.appendChild(script);
+      }
+    });
   }
 }

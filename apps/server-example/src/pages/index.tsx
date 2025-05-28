@@ -3,6 +3,7 @@ import { RunePage } from "@rune-ui/server";
 import { createHtml } from "@rune-ui/jsx";
 
 interface HomePageProps {
+  fetchData?: any;
   message?: string;
   currentTime?: string;
 }
@@ -19,8 +20,14 @@ export default class HomePage extends RunePage<HomePageProps> {
 
   async getServerSideProps() {
     console.log("🚀 [HomePage] getServerSideProps called!!");
+    const fetchData = await fetch(
+      "https://jsonplaceholder.typicode.com/posts/1",
+    ).then((res) => res.json());
+    console.log(fetchData);
+
     return {
       props: {
+        fetchData,
         message: "Hello from server side!",
         currentTime: new Date().toISOString(),
       },
@@ -39,6 +46,9 @@ export default class HomePage extends RunePage<HomePageProps> {
           <p style="font-size: 1.2rem; margin: 0; opacity: 0.9;">
             A powerful SSR framework built on Rune
           </p>
+          <pre>
+            <code>{JSON.stringify(this.data.fetchData, null, 2)}</code>
+          </pre>
         </section>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
@@ -95,6 +105,7 @@ export default class HomePage extends RunePage<HomePageProps> {
             {this.renderNavButton("/about", "About Page", "#0070f3")}
             {this.renderNavButton("/users/123", "User Profile", "#28a745")}
             {this.renderNavButton("/api/hello", "API Test", "#ffc107")}
+            {this.renderNavButton("/test", "Test", "#ffc107")}
           </div>
         </section>
       </div>
