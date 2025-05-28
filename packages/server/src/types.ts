@@ -8,6 +8,7 @@ export interface RuneServerOptions {
   apiDir?: string;
   publicDir?: string;
   buildDir?: string;
+  clientAssetsPrefix?: string; // clientAssetsPrefix 추가
   hotReloadPort?: number;
 }
 

@@ -1,4 +1,4 @@
-import chokidar from "chokidar";
+import chokidar, { FSWatcher } from "chokidar";
 import path from "path";
 
 export interface FileWatcherOptions {
@@ -12,7 +12,7 @@ export interface FileWatcherOptions {
 }
 
 export class FileWatcher {
-  private watcher?: chokidar.FSWatcher;
+  private watcher?: FSWatcher;
 
   constructor(private options: FileWatcherOptions) {}
 

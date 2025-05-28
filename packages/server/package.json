@@ -37,6 +37,8 @@
     "@rune-ui/typescript-config": "workspace:*",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.21",
+    "@types/fs-extra": "^11.0.4",
+    "@types/glob": "^8.1.0",
     "@types/ws": "^8.18.1",
     "commander": "^14.0.0",
     "chalk": "^5.4.1",
@@ -50,6 +52,9 @@
     "chokidar": "^4.0.3",
     "express": "^5.1.0",
     "rune-ts": "^0.9.3",
-    "ws": "^8.18.2"
+    "ws": "^8.18.2",
+    "esbuild": "^0.25.5",
+    "fs-extra": "^11.3.0",
+    "glob": "^11.0.2"
   }
 }

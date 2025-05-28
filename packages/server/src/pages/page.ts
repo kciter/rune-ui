@@ -44,24 +44,4 @@ export abstract class RunePage<
    * 페이지 컨텐츠 렌더링 (추상 메서드)
    */
   abstract template(): Html;
-
-  /**
-   * 전체 HTML 문서 생성
-   */
-  toHtml(): string {
-    const DocumentClass =
-      (this.constructor as typeof RunePage).getDocument?.() || Document;
-    const metadata =
-      (this.constructor as typeof RunePage).getMetadata?.() || {};
-    const clientScript = this.getClientScript?.() || "";
-
-    const document = new DocumentClass({
-      metadata,
-      clientScript,
-      pageData: this.data,
-      children: this.template(),
-    });
-
-    return document.toHtml();
-  }
 }

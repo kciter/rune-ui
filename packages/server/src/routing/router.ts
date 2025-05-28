@@ -108,7 +108,7 @@ export class RuneRouter {
       const patternPart = patternParts[i];
       const pathPart = pathParts[i];
 
-      if (patternPart.startsWith(":")) {
+      if (patternPart?.startsWith(":") && pathPart) {
         // 동적 라우트 매개변수
         const paramName = patternPart.slice(1);
         params[paramName] = decodeURIComponent(pathPart);

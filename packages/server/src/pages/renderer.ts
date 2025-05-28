@@ -1,51 +1,61 @@
 import type { Request, Response } from "express";
 import type { PageModule, RunePageProps } from "../types";
 import { RunePage } from "./page";
+import { setSsrContextInJsx } from "@rune-ui/jsx";
+import { Document } from "./document";
 
 export class PageRenderer {
-  constructor(private isDev: boolean = false) {}
+  constructor(
+    private isDev: boolean = false,
+    private pagesDir: string = "", // Added pagesDir
+    public clientAssetsPrefix: string = "/assets", // Changed to public (or remove private)
+  ) {}
 
   /**
    * 페이지를 서버 사이드 렌더링
    */
   async renderPage(
-    PageComponent: new (props: any) => RunePage,
-    props: RunePageProps,
-    req: Request,
-    res: Response,
+    PageComponent: PageModule["default"], // 타입을 PageModule['default']로 변경
+    pageProps: any,
   ): Promise<string> {
+    setSsrContextInJsx(true); // SSR 컨텍스트 시작
     try {
-      // 서버 사이드 props 가져오기
-      let serverProps = {};
-      if ((PageComponent as any).getServerSideProps) {
-        const result = await (PageComponent as any).getServerSideProps({
-          params: props.params || {},
-          query: props.query || {},
-          req,
-          res,
-        });
-        serverProps = result.props || {};
+      const pageInstance = new PageComponent(pageProps);
+
+      // PageComponent (클래스 자체)에서 정적 메서드 호출
+      const metadata = (PageComponent as any).getMetadata?.() || {
+        title: "Rune App",
+        description: "",
+      };
+      const clientScript = (pageInstance as any).getClientScript?.() || "";
+      const DocumentClass = (PageComponent as any).getDocument?.() || Document;
+
+      // 페이지별 클라이언트 스크립트 경로 추가
+      let pageClientScriptPath = "";
+      // isDev 조건 제거: 개발 모드에서도 페이지별 클라이언트 스크립트가 필요함
+      if (this.pagesDir) {
+        const pageName = PageComponent.name.replace(/Page$/, "").toLowerCase();
+        if (pageName) {
+          pageClientScriptPath = `${this.clientAssetsPrefix}/${pageName}.js`;
+        }
       }
 
-      // 최종 props 합치기
-      const finalProps = {
-        ...props,
-        ...serverProps,
+      const pageContent = (pageInstance as any).template(); // template() 사용
+
+      const documentData = {
+        metadata: metadata,
+        children: pageContent,
+        pageData: pageProps,
+        clientScript: clientScript, // 사용자 정의 클라이언트 스크립트
+        pageClientScriptPath: pageClientScriptPath, // 페이지별 자동 생성 스크립트
       };
 
-      // 페이지 인스턴스 생성 및 렌더링
-      const pageInstance = new PageComponent(finalProps);
-      return pageInstance.toHtml();
-    } catch (error) {
-      console.error("Page rendering error:", error);
+      const documentComponent = new DocumentClass(documentData);
 
-      if (this.isDev) {
-        // 개발 모드에서는 상세한 에러 정보 표시
-        return this.renderErrorPage(error, props);
-      } else {
-        // 프로덕션에서는 간단한 에러 페이지
-        return this.render404Page();
-      }
+      // documentComponent.toHtmlSSR().toString() 대신 오버라이드한 toHtml() 사용
+      return documentComponent.toHtml(true); // isSSR = true 전달
+    } finally {
+      setSsrContextInJsx(false); // SSR 컨텍스트 해제
     }
   }
 

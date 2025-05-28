@@ -4,7 +4,7 @@
   "scripts": {
     "lint": "eslint --max-warnings 0 .",
     "dev": "rune dev",
-    "build": "storybook build",
+    "build": "rune build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
