@@ -5,6 +5,7 @@
     "lint": "eslint --max-warnings 0 .",
     "dev": "rune dev",
     "build": "rune build",
+    "start": "rune start",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

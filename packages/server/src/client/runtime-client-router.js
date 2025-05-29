@@ -77,11 +77,11 @@ class RuneClientRouter {
     }
 
     // 새 페이지의 클라이언트 스크립트 찾기 및 로드
-    const newScripts = newDoc.querySelectorAll('script[src*="/assets/"]');
+    const newScripts = newDoc.querySelectorAll('script[src*="/__rune/"]');
     for (const script of newScripts) {
       if (
         script.src &&
-        script.src.includes("/assets/") &&
+        script.src.includes("/__rune/") &&
         script.src.endsWith(".js")
       ) {
         // 이미 로드된 스크립트인지 확인

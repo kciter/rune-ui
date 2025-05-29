@@ -1,6 +1,7 @@
 import express from "express"; // Ensure express is imported
 import path from "path"; // Import path module
 import * as fs from "fs";
+import { fileURLToPath } from "url";
 import { RuneRouter } from "../routing/router";
 import { PageScanner } from "../routing/page-scanner";
 import { ApiScanner } from "../routing/api-scanner";
@@ -8,6 +9,10 @@ import { MiddlewareChain, builtinMiddlewares } from "./middleware";
 import { PageRenderer } from "../pages/renderer";
 import { createApiHandler } from "../api/handler";
 import type { RuneMiddleware } from "../types";
+
+// ESM에서 __dirname 대체
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Temporary: Define RuneServerOptions here if not accessible from ../types
 interface RuneServerOptions {
@@ -124,9 +129,6 @@ export class RuneServer {
 
     // Setup page routes (should be last for catch-all)
     this.setupPageRoutes();
-
-    // 404 handler (if specific handling is needed beyond page router's 404)
-    // this.setup404Handler();
   }
 
   /**

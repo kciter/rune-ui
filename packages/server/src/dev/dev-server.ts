@@ -130,8 +130,8 @@ async function buildClientPage(
       outfile: outFile,
       platform: "browser", // 플랫폼을 'browser'로 명시
       format: "esm",
-      jsxFactory: "createHtml.h",
-      jsxFragment: "createHtml.Fragment",
+      jsxFactory: "createHtml",
+      jsxFragment: "Fragment",
       // external은 플러그인에서 동적으로 처리
       loader: { ".tsx": "tsx", ".ts": "ts" },
       sourcemap: config.resolvedConfig.build?.sourcemap ?? true,

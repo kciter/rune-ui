@@ -31,6 +31,7 @@ export interface RuneConfig {
     external?: string[];
     serverPackages?: string[];
     sourcemap?: boolean;
+    minify?: boolean;
   };
 
   // 개발 모드 전용 설정
@@ -115,6 +116,7 @@ const DEFAULT_CONFIG: RuneConfig = {
       "@rune-ui/server",
     ],
     sourcemap: true,
+    minify: false,
   },
   dev: {
     overlay: true,

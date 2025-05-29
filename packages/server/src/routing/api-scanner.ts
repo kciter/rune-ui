@@ -116,7 +116,8 @@ export class ApiScanner {
         delete this.require.cache[this.require.resolve(filePath)];
       }
 
-      // require를 사용하여 모듈 로드 (esbuild-register가 처리함)
+      // 프로덕션 모드에서는 CommonJS require 사용
+      // 개발 모드에서는 esbuild-register가 처리
       const module = this.require(filePath);
       return module;
     } catch (error) {

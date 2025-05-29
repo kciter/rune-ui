@@ -104,17 +104,22 @@ program
   .action(async (options) => {
     setupTransform();
 
-    const { buildApp } = await import("../build/builder");
+    try {
+      const { buildApp } = await import("../build/builder.js");
 
-    await buildApp({
-      outputDir: path.resolve(process.cwd(), options.output),
-      pagesDir: path.resolve(process.cwd(), options.pages),
-      apiDir: path.resolve(process.cwd(), options.api),
-      publicDir: path.resolve(process.cwd(), options.public),
-      buildDir: path.resolve(process.cwd(), options.build),
-      configPath: options.config,
-      disableConfig: options.noConfig,
-    });
+      await buildApp({
+        outputDir: path.resolve(process.cwd(), options.output),
+        pagesDir: path.resolve(process.cwd(), options.pages),
+        apiDir: path.resolve(process.cwd(), options.api),
+        publicDir: path.resolve(process.cwd(), options.public),
+        buildDir: path.resolve(process.cwd(), options.build),
+        configPath: options.config,
+        disableConfig: options.noConfig,
+      });
+    } catch (error) {
+      console.error("❌ Build failed:", error);
+      process.exit(1);
+    }
   });
 
 // start 명령어 (프로덕션)
@@ -125,13 +130,18 @@ program
   .option("--host <host>", "Host address", "0.0.0.0")
   .option("-d, --dir <dir>", "Build directory", "dist")
   .action(async (options) => {
-    const { startProdServer } = await import("../prod/prod-server");
+    try {
+      const { startProdServer } = await import("../prod/prod-server.js");
 
-    startProdServer({
-      port: parseInt(options.port),
-      host: options.host,
-      buildDir: path.resolve(process.cwd(), options.dir),
-    });
+      await startProdServer({
+        port: parseInt(options.port),
+        host: options.host,
+        buildDir: path.resolve(process.cwd(), options.dir),
+      });
+    } catch (error) {
+      console.error("❌ Failed to start production server:", error);
+      process.exit(1);
+    }
   });
 
 // create 명령어 (프로젝트 생성)

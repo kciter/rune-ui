@@ -1,5 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import type { RuneMiddleware } from "../types";
+import path from "path";
+import fs from "fs";
+import zlib from "zlib";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 
 export class MiddlewareChain {
   private middlewares: RuneMiddleware[] = [];
@@ -114,13 +120,10 @@ export const builtinMiddlewares = {
         return next();
       }
 
-      const filePath = require("path").join(publicDir, req.url);
+      const filePath = path.join(publicDir, req.url);
 
-      if (
-        require("fs").existsSync(filePath) &&
-        require("fs").statSync(filePath).isFile()
-      ) {
-        const ext = require("path").extname(filePath);
+      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        const ext = path.extname(filePath);
         const mimeTypes: Record<string, string> = {
           ".html": "text/html",
           ".css": "text/css",
@@ -136,7 +139,7 @@ export const builtinMiddlewares = {
         const mimeType = mimeTypes[ext] || "application/octet-stream";
         res.setHeader("Content-Type", mimeType);
 
-        const content = require("fs").readFileSync(filePath);
+        const content = fs.readFileSync(filePath);
         res.send(content);
         return;
       }
@@ -157,7 +160,6 @@ export const builtinMiddlewares = {
 
         res.send = function (data: any) {
           if (typeof data === "string" && data.length > 1024) {
-            const zlib = require("zlib");
             const compressed = zlib.gzipSync(data);
 
             this.setHeader("Content-Encoding", "gzip");
