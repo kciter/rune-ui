@@ -75,6 +75,8 @@ export interface RuneDevConfig {
 export interface RuneBuildConfig {
   minify?: boolean;
   sourcemap?: boolean;
+  external?: string[];
+  serverPackages?: string[];
 }
 
 export interface RuneMiddlewareConfig {

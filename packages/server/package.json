@@ -2,6 +2,7 @@
   "name": "@rune-ui/server",
   "version": "0.0.1",
   "license": "MIT",
+  "type": "module",
   "source": "./src/index.ts",
   "main": "./src/index.ts",
   "module": "./src/index.ts",

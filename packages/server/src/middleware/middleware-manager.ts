@@ -23,57 +23,6 @@ export class MiddlewareManager {
   private middlewares: MiddlewareConfig[] = [];
   private builtinMiddlewares: Map<string, () => RuneMiddleware> = new Map();
 
-  constructor() {
-    this.initBuiltinMiddlewares();
-  }
-
-  private initBuiltinMiddlewares() {
-    // CORS 미들웨어
-    this.builtinMiddlewares.set("cors", () => {
-      return (req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header(
-          "Access-Control-Allow-Methods",
-          "GET,PUT,POST,DELETE,OPTIONS",
-        );
-        res.header(
-          "Access-Control-Allow-Headers",
-          "Content-Type, Authorization, Content-Length, X-Requested-With",
-        );
-
-        if (req.method === "OPTIONS") {
-          res.sendStatus(200);
-        } else {
-          next();
-        }
-      };
-    });
-
-    // 로깅 미들웨어
-    this.builtinMiddlewares.set("logging", () => {
-      return (req, res, next) => {
-        const start = Date.now();
-        res.on("finish", () => {
-          const duration = Date.now() - start;
-          console.log(
-            `📄 ${req.method} ${req.url} ${res.statusCode} - ${duration}ms`,
-          );
-        });
-        next();
-      };
-    });
-
-    // 보안 미들웨어
-    this.builtinMiddlewares.set("security", () => {
-      return (req, res, next) => {
-        res.setHeader("X-Content-Type-Options", "nosniff");
-        res.setHeader("X-Frame-Options", "DENY");
-        res.setHeader("X-XSS-Protection", "1; mode=block");
-        next();
-      };
-    });
-  }
-
   async loadMiddlewares(
     middlewareConfigs: (string | RuneMiddlewareConfig)[],
   ): Promise<void> {
@@ -82,17 +31,6 @@ export class MiddlewareManager {
     for (const config of middlewareConfigs) {
       try {
         if (typeof config === "string") {
-          // 내장 미들웨어 또는 파일 경로
-          if (this.builtinMiddlewares.has(config)) {
-            const middlewareFactory = this.builtinMiddlewares.get(config)!;
-            this.middlewares.push({
-              path: `builtin:${config}`,
-              middleware: middlewareFactory(),
-            });
-            console.log(`✅ Built-in middleware loaded: ${config}`);
-            continue;
-          }
-
           // 파일 경로로 처리
           await this.loadCustomMiddleware(config);
         } else {
@@ -118,8 +56,6 @@ export class MiddlewareManager {
       console.warn(`⚠️ Middleware file not found: ${absolutePath}`);
       return;
     }
-
-    console.log(`🔧 Loading middleware: ${path.basename(absolutePath)}`);
 
     // 캐시에서 제거 (개발 모드에서 핫 리로드를 위해)
     if (require.cache[absolutePath]) {
@@ -177,8 +113,6 @@ export class MiddlewareManager {
       path: absolutePath,
       middleware,
     });
-
-    console.log(`✅ Middleware loaded: ${path.basename(absolutePath)}`);
   }
 
   getMiddlewares(): RuneMiddleware[] {
@@ -221,13 +155,5 @@ export class MiddlewareManager {
     } catch (error) {
       console.error(`❌ Error reloading middleware ${changedPath}:`, error);
     }
-  }
-
-  // 모든 미들웨어 정보 출력 (디버깅용)
-  printMiddlewares(): void {
-    console.log(`📋 Loaded middlewares (${this.middlewares.length}):`);
-    this.middlewares.forEach((config, index) => {
-      console.log(`  ${index + 1}. ${path.basename(config.path)}`);
-    });
   }
 }

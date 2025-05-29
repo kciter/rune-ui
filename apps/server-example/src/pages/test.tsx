@@ -11,27 +11,25 @@ export default class TestPage extends RunePage {
   }
 
   async getServerSideProps() {
-    console.log("🚀 [HomePage] getServerSideProps called!!");
-    const fetchData = await fetch(
-      "https://jsonplaceholder.typicode.com/posts/1",
-    ).then((res) => res.json());
-    console.log(fetchData);
+    // 서버 사이드에서만 Express 사용 (동적 import)
+    if (typeof window === "undefined") {
+      try {
+        const express = await import("express");
+        console.log("Express available on server:", typeof express.default);
+      } catch (e) {
+        console.log("Express not available or import failed");
+      }
+    }
 
     return {
-      props: {
-        fetchData,
-        message: "Hello from server side!",
-        currentTime: new Date().toISOString(),
-      },
+      props: {},
     };
   }
 
   template() {
+    // throw new Error("TestPage template should not be called directly.");
     return (
       <div style="font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem;">
-        <pre>
-          <code>{JSON.stringify(this.data.fetchData, null, 2)}</code>
-        </pre>
         Test
         <TestComponent message="Hi!" />
       </div>

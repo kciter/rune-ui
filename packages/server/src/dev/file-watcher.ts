@@ -44,14 +44,11 @@ export class FileWatcher {
       .on("error", (error) => {
         console.error("❌ File watcher error:", error);
       });
-
-    console.log("👀 File watcher started");
   }
 
   stop() {
     if (this.watcher) {
       this.watcher.close();
-      console.log("🛑 File watcher stopped");
     }
   }
 

@@ -70,7 +70,7 @@ export class PageRenderer {
   /**
    * 404 페이지 렌더링
    */
-  private render404Page(): string {
+  public render404Page(): string {
     return `<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -104,8 +104,6 @@ export class PageRenderer {
 <body>
   <div class="error-container">
     <h1>404 - Page Not Found</h1>
-    <p>요청한 페이지를 찾을 수 없습니다.</p>
-    <a href="/">홈으로 돌아가기</a>
   </div>
 </body>
 </html>`;
@@ -114,7 +112,7 @@ export class PageRenderer {
   /**
    * 개발 모드 에러 페이지 렌더링
    */
-  private renderErrorPage(error: any, props: RunePageProps): string {
+  public renderErrorPage(error: any, props: RunePageProps): string {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : "";
 

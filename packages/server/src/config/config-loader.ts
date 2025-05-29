@@ -29,6 +29,7 @@ export interface RuneConfig {
   // 빌드 설정
   build?: {
     external?: string[];
+    serverPackages?: string[];
     sourcemap?: boolean;
   };
 
@@ -47,7 +48,7 @@ const DEFAULT_CONFIG: RuneConfig = {
     port: 3000,
     host: "localhost",
     hotReload: true,
-    hotReloadPort: 3001,
+    hotReloadPort: 10126,
   },
   dirs: {
     pages: "src/pages",
@@ -56,10 +57,63 @@ const DEFAULT_CONFIG: RuneConfig = {
     build: "dist",
   },
   assets: {
-    prefix: "/assets",
+    prefix: "/__rune",
   },
   build: {
     external: [],
+    serverPackages: [
+      // Node.js 웹 프레임워크
+      "express",
+      "koa",
+      "fastify",
+      "hapi",
+
+      // Node.js 런타임 관련
+      "fs",
+      "fs-extra",
+      "path",
+      "os",
+      "crypto",
+      "stream",
+      "util",
+      "buffer",
+      "events",
+      "child_process",
+      "cluster",
+      "worker_threads",
+
+      // 서버 사이드 라이브러리
+      "chokidar",
+      "ws",
+      "cors",
+      "helmet",
+      "compression",
+      "body-parser",
+      "multer",
+      "cookie-parser",
+      "session",
+      "passport",
+
+      // 빌드/개발 도구
+      "esbuild",
+      "rollup",
+      "webpack",
+      "vite",
+      "tsx",
+      "ts-node",
+      "nodemon",
+
+      // 데이터베이스
+      "mongoose",
+      "sequelize",
+      "prisma",
+      "pg",
+      "mysql",
+      "redis",
+
+      // 기타 서버 전용 패키지
+      "@rune-ui/server",
+    ],
     sourcemap: true,
   },
   dev: {
@@ -139,7 +193,19 @@ function mergeConfig(
     server: { ...defaultConfig.server, ...userConfig.server },
     dirs: { ...defaultConfig.dirs, ...userConfig.dirs },
     assets: { ...defaultConfig.assets, ...userConfig.assets },
-    build: { ...defaultConfig.build, ...userConfig.build },
+    build: {
+      ...defaultConfig.build,
+      ...userConfig.build,
+      // 배열 필드는 합치기
+      external: [
+        ...(defaultConfig.build?.external || []),
+        ...(userConfig.build?.external || []),
+      ],
+      serverPackages: [
+        ...(defaultConfig.build?.serverPackages || []),
+        ...(userConfig.build?.serverPackages || []),
+      ],
+    },
     dev: { ...defaultConfig.dev, ...userConfig.dev },
     middleware: [
       ...(defaultConfig.middleware || []),

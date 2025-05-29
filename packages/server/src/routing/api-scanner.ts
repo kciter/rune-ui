@@ -44,7 +44,6 @@ export class ApiScanner {
         if (route) {
           const loader = () => this.loadApiModule(fullPath);
           this.router.addApiRoute(route, loader);
-          console.log(`🚀 API route: ${route.path} -> ${fullPath}`);
         }
       }
     }
@@ -85,8 +84,6 @@ export class ApiScanner {
       // routePath가 이미 /로 시작하므로 그대로 사용
       finalPath = `/api${routePath}`;
     }
-
-    console.log(`🔧 Creating API route: ${filename} -> ${finalPath}`);
 
     // 동적 라우트 변환: [param] -> :param
     const convertedPath = this.convertDynamicRoute(finalPath);

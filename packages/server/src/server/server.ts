@@ -18,6 +18,7 @@ interface RuneServerOptions {
   publicDir?: string;
   buildDir?: string;
   clientAssetsPrefix?: string;
+  hotReload?: boolean;
   hotReloadPort?: number;
 }
 
@@ -40,8 +41,9 @@ export class RuneServer {
       apiDir: path.join(process.cwd(), "src/api"),
       publicDir: path.join(process.cwd(), "public"),
       buildDir: path.join(process.cwd(), "dist"),
-      clientAssetsPrefix: "/assets",
-      hotReloadPort: 3001,
+      clientAssetsPrefix: "/__rune",
+      hotReloadPort: 10126,
+      hotReload: true,
       ...options, // Override defaults with user-provided options
     };
 
@@ -61,24 +63,9 @@ export class RuneServer {
       const clientBuildDir = path.join(this.options.buildDir, "client");
       // Check if clientBuildDir actually exists before trying to serve it
       if (fs.existsSync(clientBuildDir)) {
-        console.log(
-          `[RuneServer] Serving client build assets from: ${clientBuildDir} at ${this.options.clientAssetsPrefix}`,
-        );
         this.app.use(
           this.options.clientAssetsPrefix,
           express.static(clientBuildDir),
-        );
-      } else {
-        if (this.options.dev) {
-          console.warn(
-            `[RuneServer] Client build directory does not exist: ${clientBuildDir}. Client assets will not be served. This might be expected if you haven't built the client assets yet.`,
-          );
-        }
-      }
-    } else {
-      if (this.options.dev) {
-        console.warn(
-          "[RuneServer] buildDir or clientAssetsPrefix option is not set. Client assets may not be served.",
         );
       }
     }
@@ -146,7 +133,6 @@ export class RuneServer {
    * 라우트 스캔
    */
   private scanRoutes() {
-    console.log("🔍 Scanning routes...");
     this.pageScanner.scan();
     this.apiScanner.scan();
 
@@ -173,7 +159,7 @@ export class RuneServer {
     });
 
     // 개발 모드에서만 Hot Reload 스크립트 제공
-    if (this.options.dev) {
+    if (this.options.dev && this.options.hotReload) {
       this.app.get("/__hot_reload__.js", (req, res) => {
         res.setHeader("Content-Type", "application/javascript");
         const hotReloadScript = this.getHotReloadCode();
@@ -215,20 +201,6 @@ export class RuneServer {
             const handler = createApiHandler(module);
             await handler(req, res);
             return;
-          } else {
-            console.log(
-              `❌ Failed to load API module for route: ${route.path}`,
-            );
-          }
-        } else {
-          if (this.options.dev) {
-            // 개발 모드에서만 상세 로그 출력
-            console.log(`❌ No API route match found for: ${fullPath}`);
-            const routes = this.router.getRoutes();
-            console.log(
-              `📋 Available API routes:`,
-              routes.apis.map((r) => r.path),
-            );
           }
         }
 
@@ -277,7 +249,6 @@ export class RuneServer {
                   pageProps = { ...pageProps, ...result.props };
                 }
               } catch (error) {
-                console.error("getServerSideProps error:", error);
                 if (this.options.dev) {
                   // 개발 모드에서는 에러 페이지 렌더링
                   const errorHtml = this.pageRenderer["renderErrorPage"](
@@ -304,20 +275,19 @@ export class RuneServer {
         }
 
         // 페이지를 찾지 못했으면 404
-        res.status(404).send(this.pageRenderer["render404Page"]());
+        res.status(404).send(this.pageRenderer.render404Page());
       } catch (error) {
-        console.error("Page route error:", error);
+        if (this.options.dev) {
+          // 개발 모드에서는 에러 페이지 렌더링
+          const errorHtml = this.pageRenderer.renderErrorPage(error, {});
+          res.setHeader("Content-Type", "text/html");
+          res.status(500).send(errorHtml);
+          return;
+        }
+
+        // 프로덕션에서는 일반 에러 응답
         res.status(500).send("Internal Server Error");
       }
-    });
-  }
-
-  /**
-   * 404 핸들러 설정
-   */
-  private setup404Handler() {
-    this.app.use((req, res) => {
-      res.status(404).json({ error: "Not Found" });
     });
   }
 
@@ -429,12 +399,10 @@ export class RuneServer {
       console.log(
         `🚀 Rune server running on http://localhost:${this.options.port}`,
       );
-      console.log(`📁 Pages: ${this.options.pagesDir}`);
-      console.log(`🔧 APIs: ${this.options.apiDir}`);
-      console.log(`📦 Public: ${this.options.publicDir}`);
       console.log(
         `🛠️  Mode: ${this.options.dev ? "development" : "production"}`,
       );
+      console.log("Press Ctrl+C to stop");
     });
 
     return this.server;

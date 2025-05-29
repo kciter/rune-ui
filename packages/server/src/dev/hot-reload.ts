@@ -91,15 +91,11 @@ export class HotReloadServer {
   stop() {
     return new Promise<void>((resolve) => {
       const cleanup = () => {
-        console.log("🛑 Hot reload server stopped");
         resolve();
       };
 
       if (this.wss) {
         // 모든 클라이언트 연결 강제 종료
-        console.log(
-          `🔌 Terminating ${this.clients.size} hot reload clients...`,
-        );
         this.clients.forEach((client) => {
           if (
             client.readyState === WebSocket.OPEN ||
@@ -109,13 +105,10 @@ export class HotReloadServer {
           }
         });
         this.clients.clear(); // 클라이언트 Set 비우기
-        console.log("🔌 All hot reload clients terminated.");
 
         this.wss.close(() => {
-          console.log("🔌 WebSocket server closed.");
           if (this.server) {
             this.server.close(() => {
-              console.log("🔌 HTTP server for hot reload closed.");
               cleanup();
             });
           } else {

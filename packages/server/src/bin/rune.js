@@ -33,9 +33,7 @@ function setupTransform() {
         type: "commonjs",
       },
     });
-    console.log("✅ Transform engine activated");
   } catch (error) {
-    console.error("❌ Failed to activate transform engine:", error.message);
     process.exit(1);
   }
 }

@@ -44,7 +44,6 @@ export class PageScanner {
         if (route) {
           const loader = () => this.loadPageModule(fullPath);
           this.router.addPageRoute(route, loader);
-          console.log(`📄 Page route: ${route.path} -> ${fullPath}`);
         }
       }
     }
@@ -78,10 +77,6 @@ export class PageScanner {
     const convertedPath = this.convertDynamicRoute(routePath);
     const isDynamic = convertedPath !== routePath;
     const params = this.extractParams(convertedPath);
-
-    console.log(
-      `📄 Creating page route: ${filename} -> ${convertedPath} (from ${filePath})`,
-    );
 
     return {
       path: convertedPath,
