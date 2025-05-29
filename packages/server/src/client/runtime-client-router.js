@@ -97,10 +97,6 @@ class RuneClientRouter {
 
     console.log("✅ All scripts loaded, updating DOM...");
 
-    // 페이드 전환
-    // currentContent.style.opacity = '0';
-    // currentContent.style.transition = 'opacity 150ms ease-out';
-
     // 스크립트 로드 완료 후 DOM 업데이트
     currentContent.innerHTML = newContent.innerHTML;
 

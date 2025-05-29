@@ -55,7 +55,12 @@ program
   .option("--pages <dir>", "Pages directory", "src/pages")
   .option("--api <dir>", "API directory", "src/api")
   .option("--public <dir>", "Public directory", "public")
+  .option("--build <dir>", "Build directory", ".rune")
   .option("--host <host>", "Host address", "localhost")
+  .option("--hot-reload-port <port>", "Hot reload WebSocket port", "3001")
+  .option("--no-hot-reload", "Disable hot reload")
+  .option("-c, --config <path>", "Path to config file")
+  .option("--no-config", "Disable config file loading")
   .action(async (options) => {
     setupTransform();
 
@@ -63,12 +68,22 @@ program
       // .js 확장자 추가하고 await 사용
       const { startDevServer } = await import("../dev/dev-server.js");
 
+      // hot reload 옵션 처리
+      const hotReloadPort =
+        options.hotReload !== false
+          ? parseInt(options.hotReloadPort)
+          : undefined;
+
       await startDevServer({
         port: parseInt(options.port),
         host: options.host,
         pagesDir: path.resolve(process.cwd(), options.pages),
         apiDir: path.resolve(process.cwd(), options.api),
         publicDir: path.resolve(process.cwd(), options.public),
+        buildDir: path.resolve(process.cwd(), options.build),
+        hotReloadPort,
+        configPath: options.config,
+        disableConfig: options.noConfig,
         dev: true,
       });
     } catch (error) {
@@ -85,6 +100,9 @@ program
   .option("--pages <dir>", "Pages directory", "src/pages")
   .option("--api <dir>", "API directory", "src/api")
   .option("--public <dir>", "Public directory", "public")
+  .option("--build <dir>", "Build directory", ".rune")
+  .option("-c, --config <path>", "Path to config file")
+  .option("--no-config", "Disable config file loading")
   .action(async (options) => {
     setupTransform();
 
@@ -95,6 +113,9 @@ program
       pagesDir: path.resolve(process.cwd(), options.pages),
       apiDir: path.resolve(process.cwd(), options.api),
       publicDir: path.resolve(process.cwd(), options.public),
+      buildDir: path.resolve(process.cwd(), options.build),
+      configPath: options.config,
+      disableConfig: options.noConfig,
     });
   });
 

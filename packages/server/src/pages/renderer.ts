@@ -41,9 +41,6 @@ export class PageRenderer {
           .replace(/\.tsx?$/, "") // 확장자 제거
           .replace(/\\/g, "/"); // Windows 경로 정규화
         pageClientScriptPath = `${this.clientAssetsPrefix}/${scriptName}.js`;
-        console.log(
-          `📁 [PageRenderer] Page script path: ${pageClientScriptPath} (from ${route.filePath})`,
-        );
       }
 
       const pageContent = (pageInstance as any).template(); // template() 사용

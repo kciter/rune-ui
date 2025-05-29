@@ -81,38 +81,10 @@ export class Document extends View<DocumentProps> {
 
   // toHtmlSSR 또는 toHtml 메서드를 오버라이드하여 template()의 결과를 직접 반환
   override toHtml(isSSR: boolean = false): string {
-    console.log(`[Document.toHtml] called with isSSR: ${isSSR}`);
     const templateOutput = this.template();
-
-    console.log(
-      `[Document.toHtml] templateOutput type: ${typeof templateOutput}, is View: ${templateOutput instanceof View}, constructor: ${templateOutput?.constructor?.name}`,
-    );
 
     // Html 객체를 문자열로 변환 시도
     const htmlString = this._renderRuneTsHtmlObject(templateOutput, isSSR);
-
-    console.log(
-      `[Document.toHtml] result from _renderRuneTsHtmlObject: typeof ${typeof htmlString}, length: ${htmlString?.length}, content preview: ${htmlString?.substring(0, 500)}`,
-    );
-
-    if (typeof htmlString !== "string") {
-      console.error(
-        `[Document.toHtml] ERROR: _renderRuneTsHtmlObject() did not return a valid string (type: ${typeof htmlString}). Falling back to templateOutput.toString().`,
-      );
-      return templateOutput.toString(); // 최후의 수단
-    }
-
-    if (
-      htmlString === "[object Object]" &&
-      templateOutput &&
-      typeof templateOutput === "object" &&
-      templateOutput.constructor?.name === "Html"
-    ) {
-      console.warn(
-        "[Document.toHtml] WARN: _renderRuneTsHtmlObject still resulted in '[object Object]'. This might indicate that _templateVals in the Html object already contained this string literal.",
-      );
-    }
-
     return htmlString;
   }
 

@@ -23,7 +23,6 @@ export default class HomePage extends RunePage<HomePageProps> {
     const fetchData = await fetch(
       "https://jsonplaceholder.typicode.com/posts/1",
     ).then((res) => res.json());
-    console.log(fetchData);
 
     return {
       props: {

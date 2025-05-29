@@ -5,6 +5,12 @@ import esbuild from "esbuild"; // esbuild 추가
 import { RuneServer } from "../server/server";
 import { HotReloadServer } from "./hot-reload";
 import { FileWatcher } from "./file-watcher";
+import {
+  loadConfig,
+  resolveConfigPaths,
+  RuneConfig,
+} from "../config/config-loader";
+import { MiddlewareManager } from "../middleware/middleware-manager";
 
 export interface DevServerOptions {
   port?: number;
@@ -16,10 +22,15 @@ export interface DevServerOptions {
   dev?: boolean;
   hotReloadPort?: number;
   clientAssetsPrefix?: string; // clientAssetsPrefix 추가 (RuneServer로 전달용)
+  configPath?: string; // 설정 파일 경로
+  disableConfig?: boolean; // 설정 파일 로딩 비활성화
 }
 
 // DevServer 내부에서 사용할 구체적인 설정 타입
-interface DevServerConfig extends Required<Omit<DevServerOptions, "dev">> {
+interface DevServerConfig
+  extends Required<
+    Omit<DevServerOptions, "dev" | "configPath" | "disableConfig">
+  > {
   // dev는 항상 true
   dev: true;
 }
@@ -32,7 +43,7 @@ function extractExportedNames(content: string): string[] {
   const defaultExportMatch = content.match(
     /export\s+default\s+(class|function)\s+(\w+)/,
   );
-  if (defaultExportMatch) {
+  if (defaultExportMatch && defaultExportMatch[2]) {
     exportedNames.push(defaultExportMatch[2]);
   }
 
@@ -41,16 +52,22 @@ function extractExportedNames(content: string): string[] {
     /export\s+(class|function|const|let|var)\s+(\w+)/g,
   );
   for (const match of namedExportMatches) {
-    exportedNames.push(match[2]);
+    if (match[2]) {
+      exportedNames.push(match[2]);
+    }
   }
 
   // export { ... } 패턴
   const exportBlockMatches = content.matchAll(/export\s+\{\s*([^}]+)\s*\}/g);
   for (const match of exportBlockMatches) {
     const names = match[1]
-      .split(",")
-      .map((name) => name.trim().split(" as ")[0].trim());
-    exportedNames.push(...names);
+      ?.split(",")
+      .map((name) => name.trim().split(" as ")[0]?.trim())
+      .filter((name) => name !== undefined)
+      .filter(Boolean);
+    if (names && names.length > 0) {
+      exportedNames.push(...names);
+    }
   }
 
   return [...new Set(exportedNames)]; // 중복 제거
@@ -209,32 +226,66 @@ async function buildAllClientPages(config: DevServerConfig) {
 }
 
 export async function startDevServer(options: DevServerOptions = {}) {
-  // options에서 dev를 분리하여 config.dev가 항상 true가 되도록 합니다.
-  // 나머지 옵션들은 기본값을 가지거나 options에서 가져옵니다.
+  // 설정 파일 로딩 처리
+  let userConfig = {};
+  if (!options.disableConfig) {
+    try {
+      userConfig = await loadConfig(options.configPath);
+      console.log("📄 Configuration loaded successfully");
+    } catch (error) {
+      if (options.configPath) {
+        // 명시적으로 설정 파일 경로가 지정된 경우에만 에러로 처리
+        console.error("❌ Failed to load config file:", error);
+        process.exit(1);
+      } else {
+        // 기본 경로에서 설정 파일을 찾지 못한 경우는 무시
+        console.log("ℹ️ No config file found, using defaults");
+      }
+    }
+  } else {
+    console.log("ℹ️ Config file loading disabled");
+  }
+
+  const resolvedConfig = resolveConfigPaths(userConfig);
+
+  if (Object.keys(userConfig).length > 0) {
+    console.log("📄 Loaded configuration:", {
+      server: resolvedConfig.server,
+      dirs: resolvedConfig.dirs,
+      middleware: resolvedConfig.middleware?.length || 0,
+    });
+  }
+
+  // 설정 파일의 값과 옵션을 병합 (옵션이 우선순위)
   const {
-    dev: _ignoredDevOption, // DevServerConfig는 dev: true를 강제하므로 options.dev는 무시합니다.
-    port = 3000,
-    host = "localhost",
-    hotReloadPort = 3001,
-    pagesDir = path.join(process.cwd(), "src/pages"),
-    apiDir = path.join(process.cwd(), "src/api"),
-    publicDir = path.join(process.cwd(), "public"),
-    buildDir = path.join(process.cwd(), "dist"),
-    clientAssetsPrefix = "/assets",
-    ...otherPassedOptions // 혹시 모를 추가 옵션들 (현재 DevServerOptions에 없는)
+    dev: _ignoredDevOption,
+    configPath: _ignoredConfigPath,
+    disableConfig: _ignoredDisableConfig,
+    port = resolvedConfig.server?.port || 3000,
+    host = resolvedConfig.server?.host || "localhost",
+    hotReloadPort = resolvedConfig.server?.hotReloadPort || 3001,
+    pagesDir = resolvedConfig.dirs?.pages ||
+      path.join(process.cwd(), "src/pages"),
+    apiDir = resolvedConfig.dirs?.api || path.join(process.cwd(), "src/api"),
+    publicDir = resolvedConfig.dirs?.public ||
+      path.join(process.cwd(), "public"),
+    buildDir = resolvedConfig.dirs?.build || path.join(process.cwd(), "dist"),
+    clientAssetsPrefix = resolvedConfig.assets?.prefix || "/assets",
   } = options;
+
+  // Hot Reload 활성화 여부 확인
+  const hotReloadEnabled = resolvedConfig.server?.hotReload !== false;
 
   const config: DevServerConfig = {
     port,
     host,
-    dev: true, // DevServerConfig 타입에 따라 항상 true로 설정
+    dev: true,
     hotReloadPort,
     pagesDir,
     apiDir,
     publicDir,
     buildDir,
     clientAssetsPrefix,
-    ...otherPassedOptions, // DevServerConfig에 정의되지 않은 추가 옵션이 있다면 여기서 포함
   };
 
   console.log("🚀 Starting Rune development server...");
@@ -243,16 +294,37 @@ export async function startDevServer(options: DevServerOptions = {}) {
   console.log(`📦 Public: ${config.publicDir}`);
   console.log(`🏗️ Build Dir: ${config.buildDir}`);
   console.log(`🖼️ Client Assets Prefix: ${config.clientAssetsPrefix}`);
+  console.log(`🔥 Hot Reload: ${hotReloadEnabled ? "enabled" : "disabled"}`);
 
-  // Hot Reload 서버 먼저 시작
-  const hotReloadServer = new HotReloadServer({
-    port: config.hotReloadPort,
-  });
+  // 미들웨어 매니저 초기화
+  const middlewareManager = new MiddlewareManager();
+  if (resolvedConfig.middleware && resolvedConfig.middleware.length > 0) {
+    console.log(
+      `🔧 Loading ${resolvedConfig.middleware.length} middleware(s)...`,
+    );
+    await middlewareManager.loadMiddlewares(resolvedConfig.middleware);
+
+    // 디버깅을 위해 로드된 미들웨어 정보 출력
+    middlewareManager.printMiddlewares();
+  }
+
+  // Hot Reload 서버 시작 (활성화된 경우에만)
+  let hotReloadServer: HotReloadServer | null = null;
+  let actualHotReloadPort: number | undefined = hotReloadPort;
+
+  if (hotReloadEnabled && hotReloadPort) {
+    hotReloadServer = new HotReloadServer({
+      port: hotReloadPort,
+    });
+
+    await hotReloadServer.start();
+    const port = hotReloadServer.getPort();
+    if (port !== undefined) {
+      actualHotReloadPort = port;
+    }
+  }
 
   try {
-    await hotReloadServer.start();
-    const actualHotReloadPort = hotReloadServer.getPort();
-
     // 초기 클라이언트 페이지 빌드
     await buildAllClientPages(config);
 
@@ -263,8 +335,8 @@ export async function startDevServer(options: DevServerOptions = {}) {
       pagesDir: config.pagesDir,
       apiDir: config.apiDir,
       publicDir: config.publicDir,
-      buildDir: config.buildDir, // RuneServer에 buildDir 전달
-      clientAssetsPrefix: config.clientAssetsPrefix, // RuneServer에 clientAssetsPrefix 전달
+      buildDir: config.buildDir,
+      clientAssetsPrefix: config.clientAssetsPrefix,
       hotReloadPort: actualHotReloadPort,
     });
 
@@ -302,27 +374,42 @@ export async function startDevServer(options: DevServerOptions = {}) {
             // 라우트 다시 스캔 (서버 측 코드 변경 대응)
             server.rescanRoutes();
 
-            // 브라우저 새로고침
-            hotReloadServer.reload(`${changeType}: ${path.basename(filePath)}`);
+            // 브라우저 새로고침 (Hot Reload가 활성화된 경우에만)
+            if (hotReloadServer) {
+              hotReloadServer.reload(
+                `${changeType}: ${path.basename(filePath)}`,
+              );
+            }
           } catch (error) {
             console.error(`❌ Error processing file change:`, error);
             const errorMessage =
               error instanceof Error ? error.message : String(error);
-            hotReloadServer.reload(`Error: ${errorMessage}`);
+            if (hotReloadServer) {
+              hotReloadServer.reload(`Error: ${errorMessage}`);
+            }
           }
         }
         // ... (기존 CSS 및 기타 파일 처리 로직) ...
         else if ([".css", ".scss", ".sass"].includes(ext)) {
-          hotReloadServer.reloadCSS();
+          if (hotReloadServer) {
+            hotReloadServer.reloadCSS();
+          }
         } else {
-          hotReloadServer.reload(`${changeType}: ${path.basename(filePath)}`);
+          if (hotReloadServer) {
+            hotReloadServer.reload(`${changeType}: ${path.basename(filePath)}`);
+          }
         }
       },
     });
 
     fileWatcher.start();
 
-    // ... (기존 미들웨어 및 서버 시작 로직) ...
+    // 사용자 정의 미들웨어 적용
+    const userMiddlewares = middlewareManager.getMiddlewares();
+    for (const middleware of userMiddlewares) {
+      server.use(middleware);
+    }
+
     server.use(async (req, res, next) => {
       res.setHeader("X-Powered-By", "Rune UI");
       await next();
@@ -331,10 +418,12 @@ export async function startDevServer(options: DevServerOptions = {}) {
     const httpServer = server.start();
 
     console.log(`✨ Server running at http://${config.host}:${config.port}`);
-    console.log(`🔥 Hot reload on port ${actualHotReloadPort}`);
+    if (hotReloadEnabled) {
+      console.log(`🔥 Hot reload on port ${actualHotReloadPort}`);
+    }
     console.log("Press Ctrl+C to stop");
 
-    // ... (기존 종료 처리 로직) ...
+    // 종료 처리 로직
     let shuttingDown = false;
     const shutdown = async () => {
       if (shuttingDown) {
@@ -346,7 +435,9 @@ export async function startDevServer(options: DevServerOptions = {}) {
 
       try {
         fileWatcher.stop();
-        await hotReloadServer.stop();
+        if (hotReloadServer) {
+          await hotReloadServer.stop();
+        }
         server.stop();
       } catch (error) {
         console.error("Error during shutdown:", error);

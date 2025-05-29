@@ -15,3 +15,4 @@ storybook-static
 # Editor-specific
 .vscode
 .idea
+.rune

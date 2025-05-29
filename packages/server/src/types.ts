@@ -48,3 +48,45 @@ export interface Route {
   isDynamic: boolean;
   params: string[];
 }
+
+// Configuration types
+export interface RuneServerConfig {
+  port?: number;
+  host?: string;
+  hotReloadPort?: number;
+  hotReload?: boolean;
+}
+
+export interface RuneDirsConfig {
+  pages?: string;
+  api?: string;
+  public?: string;
+  build?: string;
+}
+
+export interface RuneAssetsConfig {
+  prefix?: string;
+}
+
+export interface RuneDevConfig {
+  enableDebugLogs?: boolean;
+}
+
+export interface RuneBuildConfig {
+  minify?: boolean;
+  sourcemap?: boolean;
+}
+
+export interface RuneMiddlewareConfig {
+  path: string;
+  options?: Record<string, any>;
+}
+
+export interface RuneConfig {
+  server?: RuneServerConfig;
+  dirs?: RuneDirsConfig;
+  assets?: RuneAssetsConfig;
+  middleware?: (string | RuneMiddlewareConfig)[];
+  dev?: RuneDevConfig;
+  build?: RuneBuildConfig;
+}

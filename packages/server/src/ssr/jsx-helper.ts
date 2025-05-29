@@ -60,7 +60,8 @@ export function createSsrHtml(
       return new SsrAwareViewWrapper(componentInstance);
     }
 
-    return componentInstance;
+    // 일반 컨텍스트에서는 View 인스턴스를 반환 (타입 캐스팅)
+    return componentInstance as unknown as Html;
   }
 
   const normalizedProps = { ...props };
