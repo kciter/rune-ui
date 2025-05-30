@@ -52,7 +52,7 @@ program
   .option("-p, --port <port>", "Port number", "3000")
   .option("--pages <dir>", "Pages directory", "src/pages")
   .option("--api <dir>", "API directory", "src/api")
-  .option("--public <dir>", "Public directory", "public")
+  .option("--public <dir>", "Public directory", "src/public")
   .option("--build <dir>", "Build directory", ".rune")
   .option("--host <host>", "Host address", "localhost")
   .option("--hot-reload-port <port>", "Hot reload WebSocket port", "3001")

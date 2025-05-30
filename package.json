@@ -9,7 +9,8 @@
     "build": "pnpm -r --parallel --filter \"./packages/**/*\" run build",
     "build-storybook": "pnpm -F storybook build",
     "clean": "pnpm -r run clean",
-    "dev": "pnpm -F storybook dev",
+    "dev:storybook": "pnpm -F storybook dev",
+    "dev:server-example": "pnpm -F server-example dev",
     "format": "prettier --write ."
   },
   "devDependencies": {

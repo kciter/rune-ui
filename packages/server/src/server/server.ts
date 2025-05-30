@@ -44,7 +44,7 @@ export class RuneServer {
       dev: process.env.NODE_ENV !== "production",
       pagesDir: path.join(process.cwd(), "src/pages"),
       apiDir: path.join(process.cwd(), "src/api"),
-      publicDir: path.join(process.cwd(), "public"),
+      publicDir: path.join(process.cwd(), "src/public"),
       buildDir: path.join(process.cwd(), "dist"),
       clientAssetsPrefix: "/__rune",
       hotReloadPort: 10126,
@@ -105,7 +105,6 @@ export class RuneServer {
     // 기본 미들웨어 설정
     this.middlewareChain.setupDefaults();
 
-    // 정적 파일 서빙 (publicDir)
     if (this.options.publicDir && fs.existsSync(this.options.publicDir)) {
       this.middlewareChain.use(
         builtinMiddlewares.static(this.options.publicDir),

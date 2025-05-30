@@ -165,7 +165,7 @@
       }
 
       // 3. 개별 Rune View 다시 그리기
-      const runeElements = document.querySelectorAll("[data-rune-view]");
+      const runeElements = document.querySelectorAll("[data-rune]");
       runeElements.forEach((element) => {
         const viewInstance = element.__runeView;
         if (viewInstance && typeof viewInstance.redraw === "function") {

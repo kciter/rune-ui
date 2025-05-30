@@ -14,7 +14,7 @@ export default {
   dirs: {
     pages: "src/pages",
     api: "src/api",
-    public: "public",
+    public: "src/public",
     build: ".rune",
   },
 

@@ -322,7 +322,7 @@ export async function startDevServer(options: DevServerOptions = {}) {
       path.join(process.cwd(), "src/pages"),
     apiDir = resolvedConfig.dirs?.api || path.join(process.cwd(), "src/api"),
     publicDir = resolvedConfig.dirs?.public ||
-      path.join(process.cwd(), "public"),
+      path.join(process.cwd(), "src/public"),
     buildDir = resolvedConfig.dirs?.build || path.join(process.cwd(), "dist"),
     clientAssetsPrefix = resolvedConfig.assets?.prefix || "/__rune",
   } = options;

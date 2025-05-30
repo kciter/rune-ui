@@ -115,13 +115,13 @@ export const builtinMiddlewares = {
    * 정적 파일 서빙 미들웨어
    */
   static: (publicDir: string): RuneMiddleware => {
+    console.log(`📁 Static middleware initialized for: ${publicDir}`);
     return async (req, res, next) => {
       if (req.method !== "GET" || req.url.includes("..")) {
         return next();
       }
 
       const filePath = path.join(publicDir, req.url);
-
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         const ext = path.extname(filePath);
         const mimeTypes: Record<string, string> = {
@@ -134,6 +134,7 @@ export const builtinMiddlewares = {
           ".gif": "image/gif",
           ".svg": "image/svg+xml",
           ".ico": "image/x-icon",
+          ".txt": "text/plain",
         };
 
         const mimeType = mimeTypes[ext] || "application/octet-stream";
