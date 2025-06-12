@@ -17,17 +17,17 @@ class SimplePortal extends PortalView {
     return (
       <div>
         <div
-          style="
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background-color: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          z-index: 1000;
-        "
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 8,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            zIndex: 1000,
+          }}
         >
           이 박스는 document.body에 직접 렌더링됩니다!
         </div>
@@ -43,13 +43,13 @@ export const Basic = () => {
       return (
         <div style="height: 150vh; padding: 20px; background-color: #f5f5f5;">
           <div
-            style="
-              padding: 20px;
-              margin-bottom: 20px;
-              border: 1px solid #eaeaea;
-              border-radius: 4px;
-              background-color: white;
-            "
+            style={{
+              padding: 20,
+              marginBottom: 20,
+              border: "1px solid #eaeaea",
+              borderRadius: 4,
+              backgroundColor: "white",
+            }}
           >
             스크롤해도 포털 요소는 화면 중앙에 고정됩니다.
           </div>
@@ -74,12 +74,12 @@ class CustomTargetPortal extends PortalView {
     return (
       <div>
         <div
-          style="
-          background-color: #3358e4;
-          color: white;
-          padding: 15px;
-          border-radius: 8px;
-        "
+          style={{
+            backgroundColor: "#3358e4",
+            color: "white",
+            padding: 15,
+            borderRadius: 8,
+          }}
         >
           이 요소는 #portal-target 요소 내부에 렌더링됩니다
         </div>

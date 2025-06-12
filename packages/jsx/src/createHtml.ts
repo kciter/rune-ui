@@ -1,5 +1,6 @@
 import { html as runeHtmlUtil, View } from "rune-ts";
 import type { Html } from "rune-ts";
+import { styleObjectToString } from "./binding/style-attribute";
 
 type Props = Record<string, unknown>;
 type Child = string | boolean | View | Html | undefined | null | Child[];
@@ -22,6 +23,10 @@ function objectToAttrString(obj: Record<string, any>): string {
 
 function isPlainObject(val: unknown): val is Record<string, any> {
   return typeof val === "object" && val !== null && val.constructor === Object;
+}
+
+function isStyleObject(k: string) {
+  return k === "style";
 }
 
 function flatten(children: Child[]): unknown[] {
@@ -73,7 +78,9 @@ export function createHtml(
         return "";
       }
       if (isPlainObject(v)) {
-        return objectToAttrString(v);
+        return isStyleObject(k)
+          ? `${k}="${escapeAttr(styleObjectToString(v))}"`
+          : objectToAttrString(v);
       }
       return `${k}="${escapeAttr(String(v))}"`;
     })

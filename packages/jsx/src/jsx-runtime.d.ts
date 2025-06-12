@@ -1,5 +1,5 @@
 import type { Html } from "rune-ts";
-import { RuneChildren } from "@rune-ui/types";
+import { RuneChildren, RuneCSSProperties } from "@rune-ui/types";
 
 declare global {
   export namespace JSX {
@@ -12,7 +12,7 @@ declare global {
       "style" | "children"
     > & {
       children?: JSXChildren;
-      style?: string;
+      style?: string | RuneCSSProperties;
     };
 
     type IntrinsicElements = {
